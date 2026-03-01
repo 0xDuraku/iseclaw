@@ -79,8 +79,4 @@ Iseclaw
 
 ---
 
-_Built by [@0xDuraku](https://github.com/0xDuraku) | IsekaiDAO | Indonesia 🇮🇩_
-
-```
-
-```
+_Built by [@0xDuraku](https://github.com/0xDuraku) | [🐦 @0xDuraku](https://x.com/0xDuraku) | IsekaiDAO | Indonesia 🇮🇩_
