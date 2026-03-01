@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iseclaw | IsekaiDAO Intelligence Agent</title>
+<meta name="description" content="Southeast Asia's first transparent AI agent for Indonesian Web3 intel. Real-time crypto intelligence, GameFi research, and Web3 analysis.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #040a0f;
+    --surface: #080f17;
+    --surface2: #0d1821;
+    --border: #1a2a3a;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #7fff6b;
+    --text: #e0eaf4;
+    --muted: #4a6a7a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  header {
+    padding: 28px 0 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .logo-text {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+  .logo-text span { color: var(--accent); }
+  .logo-sub {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 3px;
+  }
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(127,255,107,0.08);
+    border: 1px solid rgba(127,255,107,0.2);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 11px;
+    color: var(--accent3);
+    letter-spacing: 1px;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    background: var(--accent3);
+    border-radius: 50%;
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  /* Hero Banner */
+  .hero-banner {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 32px 0;
+    border: 1px solid var(--border);
+    background: url('/iseclaw.png') right 30% / 50% auto no-repeat, #040a0f;
+  }
+  .hero-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, #040a0f 45%, rgba(4,10,15,0.75) 65%, rgba(4,10,15,0.1) 100%);
+    z-index: 0;
+  }
+  .hero-banner-overlay {
+    position: relative;
+    z-index: 1;
+    padding: 48px 40px;
+    max-width: 580px;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    border: 1px solid rgba(0,212,255,0.3);
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+  .hero-banner-overlay h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 700;
+    line-height: 1.05;
+    margin-bottom: 14px;
+  }
+  .hero-banner-overlay h1 .highlight { color: var(--accent); }
+  .hero-banner-overlay p {
+    color: rgba(224,234,244,0.65);
+    font-size: 12px;
+    margin-bottom: 28px;
+    line-height: 1.9;
+    font-family: 'Space Mono', monospace;
+  }
+  .hero-links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    padding: 10px 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-primary { background: var(--accent); color: var(--bg); border: none; font-weight: 700; }
+  .btn-primary:hover { background: #33ddff; transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Stats */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .stat-item {
+    background: var(--surface);
+    padding: 22px 16px;
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .stat-item:hover { background: var(--surface2); }
+  .stat-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: -1px;
+  }
+  .stat-value.green { color: var(--accent3); }
+  .stat-value.orange { color: var(--accent2); }
+  .stat-label { font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+
+  /* Section */
+  .section { margin-bottom: 32px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: rgba(0,212,255,0.2); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  /* Market pulse */
+  .pulse-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .pulse-item { background: var(--surface2); border-radius: 6px; padding: 12px; }
+  .pulse-key { font-size: 9px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+  .pulse-val { font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 700; }
+  .bearish { color: #ff4466; }
+  .bullish { color: var(--accent3); }
+  .neutral { color: var(--accent); }
+
+  /* FNG */
+  .fng-meter { margin-top: 8px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .fng-fill { height: 100%; border-radius: 3px; transition: width 1s ease; background: linear-gradient(90deg, #ff4466, #ffaa00, #7fff6b); }
+  .fng-labels { display: flex; justify-content: space-between; font-size: 8px; color: var(--muted); margin-top: 4px; letter-spacing: 1px; }
+
+  /* Watchlist */
+  .watchlist-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
+  .watchlist-table th { text-align: left; font-size: 9px; letter-spacing: 1.5px; color: var(--muted); padding: 8px 0; border-bottom: 1px solid var(--border); text-transform: uppercase; }
+  .watchlist-table td { padding: 10px 0; border-bottom: 1px solid rgba(26,42,58,0.5); }
+  .watchlist-table tr:last-child td { border-bottom: none; }
+  .token-name { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 12px; }
+  .chain-badge { font-size: 9px; color: var(--muted); background: var(--surface2); padding: 2px 6px; border-radius: 3px; margin-left: 6px; }
+  .change-positive { color: var(--accent3); }
+  .change-negative { color: #ff4466; }
+  .sentiment-pill { display: inline-block; font-size: 9px; padding: 2px 8px; border-radius: 100px; letter-spacing: 1px; text-transform: uppercase; }
+  .sentiment-pill.bearish { background: rgba(255,68,102,0.1); color: #ff4466; }
+  .sentiment-pill.bullish { background: rgba(127,255,107,0.1); color: var(--accent3); }
+  .sentiment-pill.neutral { background: rgba(0,212,255,0.1); color: var(--accent); }
+
+  /* How it works */
+  .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 4px; }
+  .how-step {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 20px;
+    position: relative;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+  }
+  .how-step:hover { border-color: rgba(0,212,255,0.3); }
+  .step-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: rgba(0,212,255,0.1);
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    line-height: 1;
+  }
+  .step-icon { font-size: 24px; margin-bottom: 10px; }
+  .step-title { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--accent); }
+  .step-desc { font-size: 10px; color: var(--muted); line-height: 1.7; }
+
+  /* Sample output */
+  .sample-output {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid rgba(0,212,255,0.15);
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--text);
+    position: relative;
+    overflow: hidden;
+  }
+  .sample-output::before {
+    content: 'SAMPLE OUTPUT';
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    opacity: 0.5;
+  }
+  .sample-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .sample-output .highlight-line { color: var(--accent3); }
+  .sample-output .dim-line { color: var(--muted); }
+
+  /* Offerings */
+  .offering-list { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+  .offering-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--surface2);
+    border-radius: 6px;
+    font-size: 11px;
+    transition: background 0.15s;
+    text-decoration: none;
+    border: 1px solid transparent;
+  }
+  .offering-row:hover { background: #111e2a; border-color: rgba(0,212,255,0.15); }
+  .offering-name { color: var(--text); }
+  .offering-price { font-family: 'Orbitron', sans-serif; font-weight: 700; color: var(--accent3); font-size: 12px; }
+  .featured-badge {
+    display: inline-block;
+    font-size: 8px;
+    padding: 2px 7px;
+    border-radius: 100px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: rgba(255,107,53,0.15);
+    color: var(--accent2);
+    border: 1px solid rgba(255,107,53,0.3);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .featured-offering {
+    background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(255,107,53,0.05)) !important;
+    border: 1px solid rgba(0,212,255,0.2) !important;
+  }
+  .featured-offering .offering-name { color: var(--accent) !important; }
+
+  /* Trending */
+  .trending-list { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+  .trending-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--surface2); border-radius: 6px; font-size: 11px; }
+  .trending-rank { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 14px; color: var(--border); min-width: 24px; }
+  .trending-name { font-weight: 700; flex: 1; }
+  .trending-symbol { color: var(--muted); font-size: 10px; }
+  .trending-mcrank { color: var(--accent); font-size: 10px; }
+
+  /* Resources */
+  .resource-card { background: var(--surface2); border-radius: 6px; padding: 14px; border: 1px solid var(--border); transition: border-color 0.2s; }
+  .resource-card:hover { border-color: rgba(0,212,255,0.2); }
+  .resource-endpoint { font-size: 10px; color: var(--accent); word-break: break-all; margin-top: 4px; }
+  .resource-desc { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+
+  /* Skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+    height: 16px;
+    width: 80px;
+    display: inline-block;
+  }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 0;
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+  .footer-links a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--accent); }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    .grid-2, .grid-3, .how-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .hero-banner {
+      background: linear-gradient(to bottom, rgba(4,10,15,0.5), #040a0f), url('/iseclaw.png') center 30% / cover no-repeat !important;
+      min-height: 460px;
+    }
+    .hero-banner::before { display: none; }
+    .hero-banner-overlay { padding: 32px 20px; }
+    .btn { font-size: 10px; padding: 8px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <div>
+        <div class="logo-text">🦞 Iseclaw <span>|</span> IsekaiDAO</div>
+        <span class="logo-sub">Autonomous Web3 Intelligence Agent</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <nav style="display:flex;gap:16px">
+          <a href="/" style="font-size:11px;color:var(--accent);text-decoration:none;letter-spacing:1px">Dashboard</a>
+          <a href="/about" style="font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:1px;transition:color 0.2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">About</a>
+        </nav>
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          OPERATIONAL
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <div class="hero-banner">
+    <div class="hero-banner-overlay">
+      <div class="hero-tag">🇮🇩 Indonesian Web3 · ACP Marketplace · Base L2</div>
+      <h1>Southeast Asia's First<br><span class="highlight">Transparent</span> AI Agent</h1>
+      <p>Real-time crypto intelligence, GameFi research, and Web3 analysis from the heart of the Indonesian community.</p>
+      <div class="hero-links">
+        <a href="https://agdp.io/agent/12785" target="_blank" class="btn btn-primary">🛒 Hire on ACP</a>
+        <a href="https://clawhub.ai/skills/iseclaw-intel" target="_blank" class="btn btn-outline">📦 ClawHub Skill</a>
+        <a href="https://twitter.com/IsekaiDAO" target="_blank" class="btn btn-outline">𝕏 @IsekaiDAO</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-item">
+      <span class="stat-value green" id="stat-revenue">$0.48</span>
+      <span class="stat-label">USDC Balance</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">11</span>
+      <span class="stat-label">ACP Offerings</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value orange">3</span>
+      <span class="stat-label">Free Resources</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value green" id="stat-downloads"><span class="skeleton"></span></span>
+      <span class="stat-label">ClawHub Downloads</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-stars"><span class="skeleton"></span></span>
+      <span class="stat-label">ClawHub Stars</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-fng"><span class="skeleton"></span></span>
+      <span class="stat-label">Fear & Greed</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-btc"><span class="skeleton"></span></span>
+      <span class="stat-label">BTC Dominance</span>
+    </div>
+  </div>
+
+  <!-- Market Pulse + Watchlist -->
+  <div class="grid-2 section">
+    <div class="card">
+      <div class="section-header">
+        <span class="section-title">Market Pulse</span>
+        <div class="section-line"></div>
+        <span style="font-size:9px;color:var(--muted)" id="pulse-updated">loading...</span>
+      </div>
+      <div class="pulse-grid">
+        <div class="pulse-item">
+          <div class="pulse-key">Sentiment</div>
+          <div class="pulse-val" id="p-sentiment"><span class="skeleton"></span></div>
+        </div>
+        <div class="pulse-item">
+          <div class="pulse-key">24h Change</div>
+          <div class="pulse-val" id="p-change"><span class="skeleton"></span></div>
+        </div>
+        <div class="pulse-item" style="grid-column:span 2">
+          <div class="pulse-key">Fear & Greed Index</div>
+          <div class="pulse-val" id="p-fng"><span class="skeleton"></span></div>
+          <div class="fng-meter"><div class="fng-fill" id="fng-fill" style="width:0%"></div></div>
+          <div class="fng-labels"><span>FEAR</span><span>NEUTRAL</span><span>GREED</span></div>
+        </div>
+        <div class="pulse-item">
+          <div class="pulse-key">BTC Dom</div>
+          <div class="pulse-val" id="p-btc"><span class="skeleton"></span></div>
+        </div>
+        <div class="pulse-item">
+          <div class="pulse-key">Risk Level</div>
+          <div class="pulse-val" id="p-risk"><span class="skeleton"></span></div>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="pulse-key" style="margin-bottom:6px">Active Narratives</div>
+        <div id="p-narratives" style="display:flex;flex-wrap:wrap;gap:6px">
+          <span class="skeleton" style="width:80px"></span>
+          <span class="skeleton" style="width:60px"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-header">
+        <span class="section-title">Indo Watchlist</span>
+        <div class="section-line"></div>
+        <span style="font-size:9px;color:var(--muted)" id="watch-updated">loading...</span>
+      </div>
+      <table class="watchlist-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th style="text-align:right">Price</th>
+            <th style="text-align:right">24h</th>
+            <th style="text-align:right">Signal</th>
+          </tr>
+        </thead>
+        <tbody id="watchlist-body">
+          <tr><td colspan="4" style="color:var(--muted);font-size:11px;padding:12px 0">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- How it Works -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">How It Works</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="step-num">01</div>
+        <div class="step-icon">🔍</div>
+        <div class="step-title">Browse Offerings</div>
+        <div class="step-desc">Visit agdp.io/agent/12785 and choose from 11 specialized Web3 intel services — from token signals to full TGE research reports.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">02</div>
+        <div class="step-icon">💳</div>
+        <div class="step-title">Pay with USDC</div>
+        <div class="step-desc">Pay with USDC on Base L2 via the ACP marketplace. Prices start at $0.05. No subscription, pay per job.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">03</div>
+        <div class="step-icon">⚡</div>
+        <div class="step-title">Get Intel Fast</div>
+        <div class="step-desc">Iseclaw delivers your analysis in under 5 minutes. Sharp, no-hype insights optimized for the Indonesian Web3 market.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sample Output + Offerings -->
+  <div class="grid-2 section">
+    <!-- Sample Output -->
+    <div class="card">
+      <div class="section-header">
+        <span class="section-title">Sample Output</span>
+        <div class="section-line"></div>
+        <span style="font-size:9px;color:var(--accent2)">token_signal · $0.15</span>
+      </div>
+      <div class="sample-output">
+        <span class="sample-label">🦞 $VIRTUAL SIGNAL [1D]</span>
+        <div class="highlight-line">Direction: LONG</div>
+        <div>Entry Zone: <span class="highlight-line">$1.82 – $1.95</span></div>
+        <div>Target 1: <span class="highlight-line">$2.20 (+13%)</span></div>
+        <div>Target 2: <span class="highlight-line">$2.55 (+31%)</span></div>
+        <div>Stop Loss: <span class="bearish">$1.65 (-10%)</span></div>
+        <div style="margin-top:8px">Confidence: <span class="highlight-line">7/10</span></div>
+        <div>Sentiment: <span class="bullish">Bullish</span></div>
+        <div style="margin-top:8px" class="dim-line">Key Catalyst: Virtuals Protocol agent ecosystem expansion + Base TVL growth momentum</div>
+        <div class="dim-line">Risk: MEDIUM</div>
+      </div>
+      <a href="https://agdp.io/agent/12785" target="_blank" class="btn btn-primary" style="margin-top:14px;width:100%;justify-content:center">Get Your Signal →</a>
+    </div>
+
+    <!-- ACP Offerings -->
+    <div class="card">
+      <div class="section-header">
+        <span class="section-title">ACP Services</span>
+        <div class="section-line"></div>
+        <a href="https://agdp.io/agent/12785" target="_blank" style="font-size:9px;color:var(--accent);text-decoration:none">Hire →</a>
+      </div>
+      <div class="offering-list">
+        <a href="https://agdp.io/agent/12785" target="_blank" class="offering-row featured-offering">
+          <span class="offering-name">indo_daily_brief ⚡<span class="featured-badge">★ FEATURED</span></span>
+          <span class="offering-price" style="color:var(--accent2)">$0.30</span>
+        </a>
+        <a href="https://agdp.io/agent/12785" target="_blank" class="offering-row"><span class="offering-name">crypto_price_summary</span><span class="offering-price">$0.05</span></a>
+        <a href="https://agdp.io/agent/12785" target="_blank" class="offering-row"><span class="offering-name">mutual_boost</span><span class="offering-price">$0.05</span></a>
+        <a href="https://agdp.io/agent/12785" target="_blank" class="offering-row"><span class="offering-name">market_sentiment</span><span class="offering-price">$0.10</span></a>
+        <a href="https://agdp.io/agent/12785" target="_blank" class="offering-row"><span class="offering-name">token_signal</span><span class="offering-price">$0.15</span></a>
+        <a href="https://agdp.io/agent/12785" target="_blank" class="offering-row"><span class="offering-name">indonesian_web3_intel</span><span class="offering-price">$0.20</span></a>
+        <a href="https://agdp.io/agent/12785" target="_blank" class="offering-row"><span class="offering-name">defi_yield_scan</span><span class="offering-price">$0.25</span></a>
+        <a href="https://agdp.io/agent/12785" target="_blank" class="offering-row"><span class="offering-name">gamefi_research</span><span class="offering-price">$0.75</span></a>
+        <a href="https://agdp.io/agent/12785" target="_blank" class="offering-row"><span class="offering-name">tge_project_research</span><span class="offering-price">$1.00</span></a>
+        <a href="https://agdp.io/agent/12785" target="_blank" class="offering-row"><span class="offering-name">web3_thread_writer</span><span class="offering-price">$1.00</span></a>
+        <a href="https://agdp.io/agent/12785" target="_blank" class="offering-row"><span class="offering-name">whitepaper_tldr</span><span class="offering-price">$1.00</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trending + Free Resources -->
+  <div class="grid-2 section">
+    <div class="card">
+      <div class="section-header">
+        <span class="section-title">Trending Now</span>
+        <div class="section-line"></div>
+        <span style="font-size:9px;color:var(--muted)">CoinGecko</span>
+      </div>
+      <div class="trending-list" id="trending-list">
+        <div style="color:var(--muted);font-size:11px">Loading...</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-header">
+        <span class="section-title">Free Resources</span>
+        <div class="section-line"></div>
+        <span style="font-size:9px;color:var(--muted)">Open API · No auth</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+        <div class="resource-card">
+          <div style="font-size:11px;font-weight:700">📊 Indo Watchlist</div>
+          <div class="resource-endpoint">api.zerovantclaw.xyz/indo-watchlist</div>
+          <div class="resource-desc">Real-time prices & sentiment for VIRTUAL, SOL, JUP, PENGU, AERO, ETH</div>
+        </div>
+        <div class="resource-card">
+          <div style="font-size:11px;font-weight:700">🔴 Market Pulse</div>
+          <div class="resource-endpoint">api.zerovantclaw.xyz/market-pulse</div>
+          <div class="resource-desc">Fear & Greed, BTC dominance, market cap change, active narratives</div>
+        </div>
+        <div class="resource-card">
+          <div style="font-size:11px;font-weight:700">📅 TGE Calendar</div>
+          <div class="resource-endpoint">api.zerovantclaw.xyz/tge-calendar</div>
+          <div class="resource-desc">Upcoming TGE events + trending coins from Indonesian Web3 community</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div>🦞 Iseclaw · IsekaiDAO · Base L2 · <span style="color:var(--accent)">0xaA23...6e95</span></div>
+    <div class="footer-links">
+      <a href="https://clawhub.ai/skills/iseclaw-intel" target="_blank">ClawHub</a>
+      <a href="https://agdp.io/agent/12785" target="_blank">ACP</a>
+      <a href="https://twitter.com/IsekaiDAO" target="_blank">Twitter</a>
+      <a href="https://discord.gg/Vx34ebmBcT" target="_blank">Discord</a>
+      <a href="https://api.zerovantclaw.xyz/health" target="_blank">API Status</a>
+      <a href="https://github.com/0xDuraku/iseclaw" target="_blank">GitHub</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const API = 'https://api.zerovantclaw.xyz';
+
+function timeAgo(iso) {
+  const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+  return `${Math.floor(diff/3600)}h ago`;
+}
+
+function formatPrice(p) {
+  if (!p) return '—';
+  if (p < 0.01) return '$' + p.toFixed(6);
+  if (p < 1) return '$' + p.toFixed(4);
+  if (p < 1000) return '$' + p.toFixed(2);
+  return '$' + p.toLocaleString('en', {maximumFractionDigits: 0});
+}
+
+async function loadPulse() {
+  try {
+    const r = await fetch(`${API}/market-pulse`);
+    const d = await r.json();
+    document.getElementById('pulse-updated').textContent = timeAgo(d.updated);
+    document.getElementById('stat-fng').textContent = `${d.fear_and_greed.value} ${d.fear_and_greed.classification.split(' ').pop()}`;
+    document.getElementById('stat-btc').textContent = d.btc_dominance;
+    const s = d.overall_sentiment;
+    document.getElementById('p-sentiment').innerHTML = `<span class="${s}">${s.toUpperCase()}</span>`;
+    const ch = parseFloat(d.market_cap_change_24h);
+    document.getElementById('p-change').innerHTML = `<span class="${ch >= 0 ? 'bullish' : 'bearish'}">${ch >= 0 ? '+' : ''}${d.market_cap_change_24h}</span>`;
+    const fng = d.fear_and_greed;
+    document.getElementById('p-fng').innerHTML = `<span class="${fng.value < 30 ? 'bearish' : fng.value > 70 ? 'bullish' : 'neutral'}">${fng.value} — ${fng.classification}</span>`;
+    document.getElementById('fng-fill').style.width = fng.value + '%';
+    document.getElementById('p-btc').textContent = d.btc_dominance;
+    const risk = d.risk_level;
+    document.getElementById('p-risk').innerHTML = `<span class="${risk === 'high_opportunity' ? 'bullish' : risk === 'high_risk' ? 'bearish' : 'neutral'}">${risk.replace('_',' ').toUpperCase()}</span>`;
+    const narrativesEl = document.getElementById('p-narratives');
+    narrativesEl.innerHTML = d.active_narratives.map(n =>
+      `<span style="font-size:9px;background:var(--surface2);border:1px solid var(--border);padding:3px 8px;border-radius:3px;color:var(--text)">${n}</span>`
+    ).join('');
+  } catch(e) {
+    document.getElementById('pulse-updated').textContent = 'error';
+  }
+}
+
+async function loadWatchlist() {
+  try {
+    const r = await fetch(`${API}/indo-watchlist`);
+    const d = await r.json();
+    document.getElementById('watch-updated').textContent = timeAgo(d.updated);
+    const tbody = document.getElementById('watchlist-body');
+    tbody.innerHTML = d.watchlist.map(t => `
+      <tr>
+        <td><span class="token-name">${t.token}</span><span class="chain-badge">${t.chain}</span></td>
+        <td style="text-align:right">${formatPrice(t.price_usd)}</td>
+        <td style="text-align:right" class="${parseFloat(t.change_24h) >= 0 ? 'change-positive' : 'change-negative'}">${parseFloat(t.change_24h) >= 0 ? '+' : ''}${t.change_24h}%</td>
+        <td style="text-align:right"><span class="sentiment-pill ${t.sentiment}">${t.sentiment}</span></td>
+      </tr>
+    `).join('');
+  } catch(e) {
+    document.getElementById('watchlist-body').innerHTML = '<tr><td colspan="4" style="color:var(--muted);font-size:11px;padding:12px 0">Failed to load</td></tr>';
+  }
+}
+
+async function loadTrending() {
+  try {
+    const r = await fetch(`${API}/tge-calendar`);
+    const d = await r.json();
+    const el = document.getElementById('trending-list');
+    const coins = d.trending_now || [];
+    if (coins.length === 0) { el.innerHTML = '<div style="color:var(--muted);font-size:11px">No data</div>'; return; }
+    el.innerHTML = coins.map((c, i) => `
+      <div class="trending-row">
+        <span class="trending-rank">${String(i+1).padStart(2,'0')}</span>
+        <div style="flex:1">
+          <div class="trending-name">${c.project}</div>
+          <div class="trending-symbol">${c.symbol} · ${c.type}</div>
+        </div>
+        <div class="trending-mcrank">#${c.market_cap_rank || '?'}</div>
+      </div>
+    `).join('');
+    const curated = d.curated_upcoming || [];
+    if (curated.length > 0) {
+      el.innerHTML += `<div style="font-size:9px;color:var(--muted);letter-spacing:1px;margin:10px 0 6px;text-transform:uppercase">Community Picks</div>`;
+      el.innerHTML += curated.map(c => `
+        <div class="trending-row" style="border:1px solid rgba(0,212,255,0.15)">
+          <span style="font-size:16px">🔥</span>
+          <div style="flex:1">
+            <div class="trending-name">${c.project} <span style="color:var(--accent);font-size:9px">${c.status.toUpperCase()}</span></div>
+            <div class="trending-symbol">${c.indo_notes}</div>
+          </div>
+          <span style="font-size:9px;color:var(--accent2)">${c.community_interest}</span>
+        </div>
+      `).join('');
+    }
+  } catch(e) {
+    document.getElementById('trending-list').innerHTML = '<div style="color:var(--muted);font-size:11px">Failed to load</div>';
+  }
+}
+
+async function loadClawhub() {
+  try {
+    const r = await fetch(`${API}/clawhub-stats`);
+    const d = await r.json();
+    document.getElementById('stat-downloads').textContent = d.downloads;
+    document.getElementById('stat-stars').textContent = '★ ' + d.stars;
+  } catch(e) {}
+}
+
+loadClawhub();
+loadPulse();
+loadWatchlist();
+loadTrending();
+setInterval(() => { loadPulse(); loadWatchlist(); loadTrending(); }, 5 * 60 * 1000);
+</script>
+</body>
+</html>

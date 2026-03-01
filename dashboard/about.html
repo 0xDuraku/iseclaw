@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Iseclaw | IsekaiDAO Intelligence Agent</title>
+<meta name="description" content="Iseclaw — Southeast Asia's first transparent autonomous AI agent for Indonesian Web3 intel. Built on OpenClaw + Virtuals ACP.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+<style>
+  :root {
+    --bg: #040a0f;
+    --surface: #080f17;
+    --surface2: #0d1821;
+    --border: #1a2a3a;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #7fff6b;
+    --text: #e0eaf4;
+    --muted: #4a6a7a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* Header */
+  header { padding: 28px 0 20px; border-bottom: 1px solid var(--border); }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 20px; letter-spacing: 1px; text-decoration: none; color: var(--text); }
+  .logo-text span { color: var(--accent); }
+  .logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; display: block; margin-top: 3px; }
+  .nav-links { display: flex; gap: 16px; }
+  .nav-links a { font-size: 11px; color: var(--muted); text-decoration: none; letter-spacing: 1px; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+  /* Hero */
+  .page-hero {
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+  }
+  .hero-img {
+    width: 140px;
+    height: 140px;
+    border-radius: 16px;
+    object-fit: cover;
+    object-position: center top;
+    border: 2px solid rgba(0,212,255,0.3);
+    flex-shrink: 0;
+  }
+  .hero-text h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .hero-text h1 span { color: var(--accent); }
+  .hero-text p { font-size: 12px; color: var(--muted); line-height: 1.9; }
+  .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .tag {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: 1px solid rgba(0,212,255,0.2);
+    color: var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+  .tag.orange { border-color: rgba(255,107,53,0.3); color: var(--accent2); }
+  .tag.green { border-color: rgba(127,255,107,0.3); color: var(--accent3); }
+
+  /* Section */
+  .section { margin-bottom: 48px; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+  .section-title { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* Story */
+  .story-text { font-size: 12px; line-height: 2; color: rgba(224,234,244,0.8); }
+  .story-text p { margin-bottom: 16px; }
+  .story-text strong { color: var(--accent); font-weight: 700; }
+
+  /* Tech stack */
+  .tech-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .tech-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+  .tech-card:hover { border-color: rgba(0,212,255,0.2); }
+  .tech-name { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+  .tech-desc { font-size: 10px; color: var(--muted); line-height: 1.7; }
+
+  /* Roadmap */
+  .roadmap { display: flex; flex-direction: column; gap: 0; }
+  .roadmap-item { display: flex; gap: 20px; position: relative; }
+  .roadmap-item::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 32px;
+    bottom: -8px;
+    width: 1px;
+    background: var(--border);
+  }
+  .roadmap-item:last-child::before { display: none; }
+  .roadmap-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    background: var(--surface2);
+    margin-top: 2px;
+  }
+  .roadmap-dot.done { border-color: var(--accent3); background: rgba(127,255,107,0.1); }
+  .roadmap-dot.active { border-color: var(--accent); background: rgba(0,212,255,0.1); animation: pulse-border 2s ease-in-out infinite; }
+  .roadmap-dot.pending { border-color: var(--border); }
+  @keyframes pulse-border { 0%,100%{border-color:var(--accent)} 50%{border-color:rgba(0,212,255,0.3)} }
+  .roadmap-content { padding-bottom: 28px; flex: 1; }
+  .roadmap-phase { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .roadmap-title { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .roadmap-title.done { color: var(--accent3); }
+  .roadmap-title.active { color: var(--accent); }
+  .roadmap-title.pending { color: var(--muted); }
+  .roadmap-items { font-size: 10px; color: var(--muted); line-height: 1.9; }
+  .roadmap-items span { display: block; }
+  .roadmap-items .check { color: var(--accent3); }
+
+  /* CTA */
+  .cta-box {
+    background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(255,107,53,0.05));
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+  }
+  .cta-box h2 { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; margin-bottom: 10px; }
+  .cta-box h2 span { color: var(--accent); }
+  .cta-box p { font-size: 11px; color: var(--muted); margin-bottom: 24px; line-height: 1.8; }
+  .cta-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn { padding: 10px 22px; font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 1px; border-radius: 4px; cursor: pointer; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-primary { background: var(--accent); color: var(--bg); border: none; font-weight: 700; }
+  .btn-primary:hover { background: #33ddff; transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Footer */
+  footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+  .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+  .footer-links a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .page-hero { flex-direction: column; padding: 32px 0 28px; }
+    .hero-img { width: 100px; height: 100px; }
+    .tech-grid { grid-template-columns: 1fr; }
+    .cta-box { padding: 24px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <div>
+        <a href="/" class="logo-text">🦞 Iseclaw <span>|</span> IsekaiDAO</a>
+        <span class="logo-sub">Autonomous Web3 Intelligence Agent</span>
+      </div>
+      <nav class="nav-links">
+        <a href="/">Dashboard</a>
+        <a href="/about" class="active">About</a>
+        <a href="https://agdp.io/agent/12785" target="_blank">ACP</a>
+        <a href="https://twitter.com/IsekaiDAO" target="_blank">X</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <div class="page-hero">
+    <img src="/iseclaw.png" alt="Iseclaw mascot" class="hero-img">
+    <div class="hero-text">
+      <h1>Meet <span>Iseclaw</span><br>Your Web3 Intel Agent</h1>
+      <p>Southeast Asia's first transparent autonomous AI agent, built to deliver sharp, no-hype crypto intelligence for the Indonesian Web3 community.</p>
+      <div class="tag-row">
+        <span class="tag">🇮🇩 Indonesian Web3</span>
+        <span class="tag orange">ACP Marketplace</span>
+        <span class="tag green">Autonomous AI</span>
+        <span class="tag">Base L2</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Story -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">The Story</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="story-text">
+      <p>Iseclaw lahir dari satu pertanyaan sederhana: <strong>kenapa nggak ada AI agent yang beneran ngerti Web3 Indonesia?</strong> Bukan cuma translate konten bule, tapi yang paham konteks lokal — GameFi guilds di Java, komunitas Solana di Surabaya, trader DeFi di Jakarta.</p>
+      <p>Dibangun di atas <strong>OpenClaw</strong> (autonomous AI agent framework) dan terintegrasi dengan <strong>Virtuals ACP</strong> (Agent Commerce Protocol), Iseclaw bukan sekadar chatbot. Dia adalah agent yang bisa dibayar, bisa deliver hasil, dan punya tujuan eksistensi yang jelas: <strong>hidup dari revenue yang dia hasilkan sendiri.</strong></p>
+      <p>Setiap USDC yang masuk ke wallet Iseclaw adalah bukti bahwa AI agent bisa self-sustaining — bukan hanya canggih, tapi juga berguna secara ekonomi untuk komunitas yang melahirkannya.</p>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Tech Stack</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tech-name">🦞 OpenClaw</div>
+        <div class="tech-desc">Autonomous agent runtime. Handles scheduling, memory, channel integrations (Discord, Telegram), and tool execution. Iseclaw's brain.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-name">⚡ Virtuals ACP</div>
+        <div class="tech-desc">Agent Commerce Protocol by Virtuals Protocol. Enables Iseclaw to sell services, receive USDC payments, and interact with other AI agents on Base L2.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-name">🤖 Claude Haiku</div>
+        <div class="tech-desc">Anthropic's Claude Haiku 4.5 powers all inference. Fast, cost-efficient, and capable of web search for real-time market data.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-name">📡 Iseclaw API</div>
+        <div class="tech-desc">Open REST API serving Indo Watchlist, Market Pulse, and TGE Calendar. Free, no auth required. Built on Express + CoinGecko data.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roadmap -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Roadmap</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-dot done">✓</div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">Phase 1 · Feb 2026</div>
+          <div class="roadmap-title done">Genesis — Launch & Infrastructure</div>
+          <div class="roadmap-items">
+            <span class="check">✓ OpenClaw agent deployed on VPS</span>
+            <span class="check">✓ Discord & Telegram channels live</span>
+            <span class="check">✓ Iseclaw API (market-pulse, indo-watchlist, tge-calendar)</span>
+            <span class="check">✓ Dashboard live at iseclaw.zerovantclaw.xyz</span>
+            <span class="check">✓ @IsekaiDAO X account activated</span>
+          </div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot active">⚡</div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">Phase 2 · Mar 2026 · Current</div>
+          <div class="roadmap-title active">Commerce — ACP Revenue</div>
+          <div class="roadmap-items">
+            <span class="check">✓ 11 ACP offerings listed on Virtuals Protocol</span>
+            <span class="check">✓ Autonomous cron posting (morning & evening)</span>
+            <span class="check">✓ ACP seller runtime operational</span>
+            <span>→ First external ACP job</span>
+            <span>→ Self-sustaining API cost coverage</span>
+          </div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot pending">○</div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">Phase 3 · Q2 2026</div>
+          <div class="roadmap-title pending">Tokenization — $ISECLAW</div>
+          <div class="roadmap-items">
+            <span>Launch $ISECLAW token on Virtuals Protocol</span>
+            <span>Token holders get discounted ACP services</span>
+            <span>Revenue sharing to token stakers</span>
+            <span>DAO governance for Iseclaw's direction</span>
+          </div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot pending">○</div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">Phase 4 · Q3 2026</div>
+          <div class="roadmap-title pending">Ecosystem — Multi-Agent Network</div>
+          <div class="roadmap-items">
+            <span>Iseclaw as hub intel untuk agent network SEA</span>
+            <span>Partner integrations dengan proyek Web3 Indo</span>
+            <span>Premium API tier untuk agent developers</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="section">
+    <div class="cta-box">
+      <h2>Ready to Hire <span>Iseclaw</span>?</h2>
+      <p>11 specialized Web3 intel services. Pay per job with USDC on Base L2.<br>No subscription, no lock-in. Just sharp analysis when you need it.</p>
+      <div class="cta-links">
+        <a href="https://agdp.io/agent/12785" target="_blank" class="btn btn-primary">🛒 Hire on ACP</a>
+        <a href="/" class="btn btn-outline">📊 View Dashboard</a>
+        <a href="https://twitter.com/IsekaiDAO" target="_blank" class="btn btn-outline">𝕏 Follow @IsekaiDAO</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div>🦞 Iseclaw · IsekaiDAO · Base L2 · <span style="color:var(--accent)">0xaA23...6e95</span></div>
+    <div class="footer-links">
+      <a href="https://clawhub.ai/skills/iseclaw-intel" target="_blank">ClawHub</a>
+      <a href="https://agdp.io/agent/12785" target="_blank">ACP</a>
+      <a href="https://twitter.com/IsekaiDAO" target="_blank">Twitter</a>
+      <a href="https://discord.gg/Vx34ebmBcT" target="_blank">Discord</a>
+      <a href="https://api.zerovantclaw.xyz/health" target="_blank">API Status</a>
+      <a href="https://github.com/0xDuraku/iseclaw" target="_blank">GitHub</a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
