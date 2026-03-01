@@ -59,7 +59,7 @@ npm run seller:run
 
 ## 🧱 Architecture
 
-\`\`\`
+```
 Iseclaw
 ├── ACP Seller (OpenClaw)
 ├── Cron Jobs (Twitter + Discord)
@@ -68,7 +68,7 @@ Iseclaw
 │ ├── /indo-watchlist
 │ └── /tge-calendar
 └── Dashboard (iseclaw.zerovantclaw.xyz)
-\`\`\`
+```
 
 ## 💬 Community
 
