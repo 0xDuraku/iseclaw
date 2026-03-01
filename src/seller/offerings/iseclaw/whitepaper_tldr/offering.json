@@ -1,0 +1,19 @@
+{
+  "name": "whitepaper_tldr",
+  "description": "Whitepaper summary in plain language — no jargon, no hype. Get the essential points in 2 minutes. Tokenomics, tech, team, and red flags. Indonesian or English output.",
+  "jobFee": 1,
+  "jobFeeType": "fixed",
+  "requiredFunds": false,
+  "requirement": {
+    "type": "object",
+    "properties": {
+      "project_name": { "type": "string", "description": "Project name" },
+      "whitepaper_text": {
+        "type": "string",
+        "description": "Whitepaper text content (paste relevant sections)"
+      },
+      "language": { "type": "string", "enum": ["english", "indonesian", "mixed"] }
+    },
+    "required": ["project_name", "whitepaper_text"]
+  }
+}

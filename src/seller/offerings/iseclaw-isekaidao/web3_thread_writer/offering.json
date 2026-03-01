@@ -1,0 +1,20 @@
+{
+  "name": "web3_thread_writer",
+  "description": "Professional Web3 Twitter/X thread writing service. Get a viral-ready 5-7 tweet thread about any crypto topic, project, or market event. Mix of Indonesian + English for SEA audience. Iseclaw style — sharp, no hype.",
+  "jobFee": 1,
+  "jobFeeType": "fixed",
+  "requiredFunds": false,
+  "requirement": {
+    "type": "object",
+    "properties": {
+      "topic": { "type": "string", "description": "Thread topic or project name" },
+      "angle": {
+        "type": "string",
+        "enum": ["educational", "analysis", "alpha", "hot_take", "project_review"],
+        "description": "Thread angle"
+      },
+      "language": { "type": "string", "enum": ["english", "indonesian", "mixed"] }
+    },
+    "required": ["topic"]
+  }
+}

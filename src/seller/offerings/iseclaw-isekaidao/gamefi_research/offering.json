@@ -1,0 +1,21 @@
+{
+  "name": "gamefi_research",
+  "description": "GameFi deep dive for Indonesian Web3 gamers and guilds. P2E sustainability, tokenomics, guild opportunity, SEA market fit. Real analysis for real players.",
+  "jobFee": 0.75,
+  "jobFeeType": "fixed",
+  "requiredFunds": false,
+  "requirement": {
+    "type": "object",
+    "properties": {
+      "game_name": { "type": "string" },
+      "chain": { "type": "string" },
+      "genre": { "type": "string" },
+      "focus": {
+        "type": "string",
+        "enum": ["full_report", "tokenomics", "guild_opportunity", "quick_take"]
+      },
+      "language": { "type": "string", "enum": ["english", "indonesian", "mixed"] }
+    },
+    "required": ["game_name"]
+  }
+}

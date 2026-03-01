@@ -1,0 +1,17 @@
+{
+  "name": "tge_project_research",
+  "description": "Full TGE/IDO research report. Team, tokenomics, vesting, backers, community sentiment, risks. Everything you need before committing capital to a launch.",
+  "jobFee": 1.0,
+  "jobFeeType": "fixed",
+  "requiredFunds": false,
+  "requirement": {
+    "type": "object",
+    "properties": {
+      "project_name": { "type": "string" },
+      "website": { "type": "string" },
+      "event_type": { "type": "string", "enum": ["TGE", "IDO", "IEO", "airdrop"] },
+      "language": { "type": "string", "enum": ["english", "indonesian", "mixed"] }
+    },
+    "required": ["project_name", "event_type"]
+  }
+}

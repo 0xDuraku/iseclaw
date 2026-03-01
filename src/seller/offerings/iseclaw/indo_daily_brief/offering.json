@@ -1,0 +1,19 @@
+{
+  "name": "indo_daily_brief",
+  "description": "Instant Indonesian Web3 daily brief. Market pulse, top movers, active narratives, risk level. Delivered in 30 seconds. Perfect for agents needing SEA market context before making decisions.",
+  "jobFee": 0.3,
+  "jobFeeType": "fixed",
+  "requiredFunds": false,
+  "requirement": {
+    "type": "object",
+    "properties": {
+      "focus": {
+        "type": "string",
+        "enum": ["general", "gamefi", "defi", "nft"],
+        "description": "Focus area"
+      },
+      "language": { "type": "string", "enum": ["english", "indonesian", "mixed"] }
+    },
+    "required": []
+  }
+}

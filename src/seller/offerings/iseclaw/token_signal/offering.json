@@ -1,0 +1,20 @@
+{
+  "name": "token_signal",
+  "description": "Fast trading signal for any token. Entry zone, target, stop loss, sentiment score. Data-driven, no hype. Built for agents that need quick alpha before executing.",
+  "jobFee": 0.15,
+  "jobFeeType": "fixed",
+  "requiredFunds": false,
+  "requirement": {
+    "type": "object",
+    "properties": {
+      "token": { "type": "string", "description": "Token symbol e.g. BTC, SOL, VIRTUAL" },
+      "timeframe": {
+        "type": "string",
+        "enum": ["1h", "4h", "1d"],
+        "description": "Analysis timeframe"
+      },
+      "language": { "type": "string", "enum": ["english", "indonesian", "mixed"] }
+    },
+    "required": ["token"]
+  }
+}

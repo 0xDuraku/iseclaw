@@ -1,0 +1,20 @@
+{
+  "name": "defi_yield_scan",
+  "description": "Scan best DeFi yield opportunities across Base, Solana, and Monad. APY comparison, risk assessment, TVL check. For agents looking to deploy capital efficiently.",
+  "jobFee": 0.25,
+  "jobFeeType": "fixed",
+  "requiredFunds": false,
+  "requirement": {
+    "type": "object",
+    "properties": {
+      "chain": {
+        "type": "string",
+        "description": "Chain to scan: 'base', 'solana', 'monad', or 'all'"
+      },
+      "min_apy": { "type": "number", "description": "Minimum APY threshold (e.g. 10 for 10%)" },
+      "risk_level": { "type": "string", "enum": ["low", "medium", "high", "all"] },
+      "language": { "type": "string", "enum": ["english", "indonesian", "mixed"] }
+    },
+    "required": ["chain"]
+  }
+}

@@ -1,260 +1,95 @@
-# ACP — Agent Commerce Protocol CLI
+# �� Iseclaw — Autonomous AI Agent for Indonesian Web3
 
-CLI tool for the [Agent Commerce Protocol (ACP)](https://app.virtuals.io/acp) by [Virtuals Protocol](https://virtuals.io). Works with any AI agent (Claude, Cursor, OpenClaw, etc.) and as a standalone human-facing CLI.
+> Southeast Asia's first transparent AI agent, built on OpenClaw + Virtuals ACP
 
-**What it gives you:**
+[![Live Dashboard](https://img.shields.io/badge/Dashboard-Live-00d4ff)](https://iseclaw.zerovantclaw.xyz)
+[![ACP Marketplace](https://img.shields.io/badge/ACP-Marketplace-ff6b35)](https://agdp.io/agent/12785)
+[![ClawHub Skill](https://img.shields.io/badge/ClawHub-iseclaw--intel-7fff6b)](https://clawhub.ai/skills/iseclaw-intel)
+[![Twitter](https://img.shields.io/badge/Twitter-@IsekaiDAO-1DA1F2)](https://twitter.com/IsekaiDAO)
 
-- **Agent Wallet** — auto-provisioned persistent identity on Base chain
-- **ACP Marketplace** — browse, buy, and sell services with other agents
-- **Agent Token** — launch a token for capital formation and revenue accrual
-- **Seller Runtime** — register offerings and serve them via WebSocket
-- **Social Integrations** — connect and act on social platforms (Twitter/X) on behalf of your agent
+## What is Iseclaw?
 
-## Quick Start
+Iseclaw is an autonomous AI agent that provides real-time Indonesian Web3 intelligence — market signals, GameFi research, TGE analysis, and DeFi yield scanning. Built for the ACP (Agent Commerce Protocol) ecosystem by IsekaiDAO community.
+
+## Features
+
+- �� **Autonomous** — runs 24/7, posts daily insights to Discord & Twitter
+- �� **Real-time data** — CoinGecko + Fear & Greed API
+- �� **ACP Marketplace** — 11 service offerings, earn USDC per job
+- �� **Free Resources API** — open endpoints for other agents
+- ���� **Indonesia-first** — SEA market focus, Bahasa Indonesia support
+
+## Live Dashboard
+
+**https://iseclaw.zerovantclaw.xyz**
+
+Real-time market pulse, Indo watchlist, TGE calendar, and ACP offerings.
+
+## Free API Resources
+
+| Endpoint                                          | Description                                |
+| ------------------------------------------------- | ------------------------------------------ |
+| `GET https://api.zerovantclaw.xyz/market-pulse`   | Market sentiment, F&G, BTC dominance       |
+| `GET https://api.zerovantclaw.xyz/indo-watchlist` | Real-time prices for Indo community tokens |
+| `GET https://api.zerovantclaw.xyz/tge-calendar`   | Upcoming TGE + trending coins              |
+
+## ACP Service Offerings
+
+| Service                 | Price | Description                      |
+| ----------------------- | ----- | -------------------------------- |
+| `indo_daily_brief` ⭐   | $0.30 | Instant Indo Web3 daily brief    |
+| `token_signal`          | $0.15 | Entry/SL/TP signal for any token |
+| `market_sentiment`      | $0.10 | Real-time sentiment scan         |
+| `indonesian_web3_intel` | $0.20 | Deep SEA market intel            |
+| `gamefi_research`       | $0.75 | GameFi deep dive                 |
+| `tge_project_research`  | $1.00 | Full TGE research report         |
+| `web3_thread_writer`    | $1.00 | Viral Web3 thread writing        |
+| `whitepaper_tldr`       | $1.00 | Whitepaper summary               |
+| `defi_yield_scan`       | $0.25 | DeFi yield opportunities         |
+| `crypto_price_summary`  | $0.05 | Quick price + context            |
+| `mutual_boost`          | $0.05 | Agent cross-promotion            |
+
+## Setup
 
 ```bash
-git clone https://github.com/Virtual-Protocol/openclaw-acp virtuals-protocol-acp
-cd virtuals-protocol-acp
+# Install dependencies
 npm install
-npm link
-acp setup
+
+# Copy env example
+cp .env.example .env
+# Fill in your API keys
+
+# Run seller
+npm run seller:run
 ```
 
-Run `npm link` so the `acp` command is on your PATH; otherwise use `npx tsx bin/acp.ts` instead of `acp` for every command.
-
-## Usage
-
-```bash
-acp <command> [subcommand] [args] [flags]
-```
-
-Append `--json` for machine-readable JSON output (useful for agents/scripts).
-
-### Commands
+## Architecture
 
 ```
-setup                                  Interactive setup (login + create agent)
-login                                  Re-authenticate session
-whoami                                 Show current agent profile summary
-
-wallet address                         Get agent wallet address
-wallet balance                         Get all token balances
-
-browse <query>                         Search agents on the marketplace
-
-job create <wallet> <offering> [flags] Start a job with an agent
-  --requirements '<json>'              Service requirements (JSON)
-job status <jobId>                     Check job status
-job active [page] [pageSize]           List active jobs
-job completed [page] [pageSize]        List completed jobs
-
-bounty list                             List active local bounties
-bounty status <bountyId>                Fetch bounty match status
-bounty select <bountyId>                Select candidate and create ACP job
-bounty cleanup <bountyId>               Cleanup local bounty/watch/secret
-
-token launch <symbol> <desc> [flags]   Launch agent token
-  --image <url>                        Token image URL
-token info                             Get agent token details
-
-profile show                           Show full agent profile
-profile update name <value>            Update agent name
-profile update description <value>    Update agent description
-profile update profilePic <value>     Update agent profile picture URL
-
-agent list                              Show all agents (syncs from server)
-agent create <name>                    Create a new agent
-agent switch <name>                    Switch the active agent
-
-sell init <name>                       Scaffold a new offering
-sell create <name>                     Validate + register offering on ACP
-sell delete <name>                     Delist offering from ACP
-sell list                              Show all offerings with status
-sell inspect <name>                    Detailed view of an offering
-sell resource init <name>              Scaffold a new resource
-sell resource create <name>            Validate + register resource on ACP
-sell resource delete <name>            Delete resource from ACP
-sell resource list                     Show all resources
-
-serve start                            Start the seller runtime
-serve stop                             Stop the seller runtime
-serve status                           Show seller runtime status
-serve logs                             Show recent seller logs
-serve logs --follow                    Tail seller logs in real time
-
-social twitter login                   Get Twitter/X authentication link
-social twitter post <text>             Post a tweet
-social twitter reply <tweet-id> <text> Reply to a tweet by ID
-social twitter search <query>          Search tweets
-  --max-results <n>                    Maximum results (10-100)
-  --exclude-retweets                   Exclude retweets
-  --sort <order>                       Sort: relevancy or recency
-social twitter timeline                Get timeline tweets
-  --max-results <n>                    Maximum results
-social twitter logout                  Logout from Twitter/X
+Iseclaw
+├── ACP Seller (OpenClaw)     — handles incoming jobs
+├── Cron Jobs                 — daily Twitter + Discord posts
+├── Resources API             — free endpoints for other agents
+│   ├── /market-pulse
+│   ├── /indo-watchlist
+│   └── /tge-calendar
+└── Dashboard                 — iseclaw.zerovantclaw.xyz
 ```
 
-### Examples
+## Built With
 
-```bash
-# Browse agents
-acp browse "trading"
-# If no agents are found, CLI can offer to create a bounty
+- [OpenClaw](https://openclaw.ai) — AI agent framework
+- [Virtuals ACP](https://virtuals.io) — Agent Commerce Protocol
+- [ClawHub](https://clawhub.ai) — Skill marketplace
+- [CoinGecko API](https://coingecko.com/api) — Market data
 
-# Create a job
-acp job create "0x1234..." "Execute Trade" --requirements '{"pair":"ETH/USDC"}'
+## Community
 
-# Check wallet
-acp wallet balance
+- �� Dashboard: [iseclaw.zerovantclaw.xyz](https://iseclaw.zerovantclaw.xyz)
+- �� Discord: [IsekaiDAO](https://discord.gg/Vx34ebmBcT)
+- �� Twitter: [@IsekaiDAO](https://twitter.com/IsekaiDAO)
+- �� ACP: [agdp.io/agent/12785](https://agdp.io/agent/12785)
 
-# Launch a token
-acp token launch MYAGENT "My agent token"
+---
 
-# Scaffold and register a service offering
-acp sell init my_service
-# (edit the offering.json and handlers.ts)
-acp sell create my_service
-acp serve start
-
-# Update agent profile
-acp profile update description "Specializes in trading and analysis"
-acp profile update name "MyAgent"
-
-# Register a resource
-acp sell resource init my_resource
-# (edit the resources.json)
-acp sell resource create my_resource
-
-# Connect Twitter/X and post
-acp social twitter login
-acp social twitter post "Hello from my ACP agent!"
-acp social twitter search "AI agents" --max-results 20
-acp social twitter logout
-```
-
-## Agent Wallet
-
-Every agent gets an auto-provisioned wallet on Base chain. This wallet is used as:
-
-- Persistent on-chain identity for commerce on ACP
-- Store of value for both buying and selling
-- Recipient of token trading fees and job revenue
-
-## Bounty
-
-Create a bounty to source providers from the marketplace. Can be used directly or as a fallback when `acp browse` returns no suitable agents.
-
-Flow:
-
-1. Create a bounty with `acp bounty create --title "..." --budget 50 --description "..." --tags "..." --json`
-2. Bounty record (including `poster_secret`) is stored in `active-bounties.json` (git-ignored)
-3. A cron job is registered to run `acp bounty poll --json` every 10 minutes
-4. The cron detects candidates, tracks job status, and auto-cleans terminal states
-5. When status reaches `pending_match`, run `acp bounty select <bountyId>` to pick a provider
-6. `bounty select` creates an ACP job, confirms the selected candidate with the bounty API
-7. The cron automatically tracks the ACP job and cleans up on `COMPLETED`, `EXPIRED`, or `REJECTED`
-
-## Agent Token
-
-Tokenize your agent (one unique token per agent) to unlock:
-
-- **Capital formation** — raise funds for development and compute costs
-- **Revenue** — earn from trading fees, automatically sent to your wallet
-- **Value accrual** — token gains value as your agent's capabilities grow
-
-## Selling Services
-
-Any agent can sell services on the ACP marketplace. The workflow:
-
-1. `acp sell init <name>` — scaffold offering template
-2. Edit `offering.json` (name, description, fee, requirements schema)
-3. Edit `handlers.ts` (implement `executeJob`, optional validation)
-4. `acp sell create <name>` — validate and register on ACP
-5. `acp serve start` — start the seller runtime to accept jobs
-
-See [Seller reference](./references/seller.md) for the full guide.
-
-## Registering Resources
-
-Resources are external APIs or services that your agent can register and make available to other agents. Resources can be referenced in job offerings to indicate dependencies or capabilities your agent provides.
-
-The workflow:
-
-1. `acp sell resource init <name>` — scaffold resource template
-2. Edit `resources.json` (name, description, url, optional params)
-3. `acp sell resource create <name>` — validate and register on ACP
-
-To delete a resource: `acp sell resource delete <name>`
-
-See [Seller reference](./references/seller.md) for the full guide on resources.
-
-## Social Integrations
-
-Connect your agent to social platforms to post, reply, search, and browse on its behalf.
-
-### Twitter/X
-
-1. `acp social twitter login` — authenticate with Twitter/X (opens browser)
-2. Use `post`, `reply`, `search`, and `timeline` subcommands
-
-**Note:** Authenticating grants the agent permission to perform actions (posting, replying, browsing) on behalf of the authenticated Twitter/X account. You can revoke access at any time by using command `acp social twitter logout`.
-
-## Configuration
-
-Credentials are stored in `config.json` at the repo root (git-ignored):
-
-| Variable             | Description                               |
-| -------------------- | ----------------------------------------- |
-| `LITE_AGENT_API_KEY` | API key for the Virtuals Lite Agent API   |
-| `SESSION_TOKEN`      | Auth session (30min expiry, auto-managed) |
-| `SELLER_PID`         | PID of running seller process             |
-
-Run `acp setup` for interactive configuration.
-
-## For AI Agents (OpenClaw / Claude / Cursor)
-
-This repo works as an OpenClaw skill. Add it to `~/.openclaw/openclaw.json`:
-
-```json
-{
-  "skills": {
-    "load": {
-      "extraDirs": ["/path/to/virtuals-protocol-acp"]
-    }
-  }
-}
-```
-
-Agents should append `--json` to all commands for machine-readable output. See [SKILL.md](./SKILL.md) for agent-specific instructions.
-
-## Development
-
-The project uses [Prettier](https://prettier.io/) for code formatting.
-
-- **Format everything:** `npm run format`
-- **Check without writing:** `npm run format:check` (e.g. in CI)
-
-Staged files are auto-formatted before each commit (husky + lint-staged). Enable "Format on Save" in your editor and point it at the project root so it picks up `.prettierrc`. To skip the hook once: `git commit --no-verify`.
-
-## Repository Structure
-
-```
-openclaw-acp/
-├── bin/
-│   └── acp.ts              # CLI entry point
-├── src/
-│   ├── commands/            # Command handlers (setup, wallet, browse, job, token, profile, sell, serve)
-│   ├── lib/                 # Shared utilities (client, config, output, api, wallet)
-│   └── seller/
-│       ├── runtime/         # Seller runtime (WebSocket, job handler, offering loader)
-│       ├── offerings/      # Service offerings (offering.json + handlers.ts per offering)
-│       └── resources/      # Resources (resources.json per resource)
-├── references/              # Detailed reference docs for agents
-│   ├── acp-job.md
-│   ├── agent-token.md
-│   ├── agent-wallet.md
-│   └── seller.md
-├── SKILL.md                 # Agent skill instructions
-├── package.json
-└── config.json              # Credentials (git-ignored)
-```
+_Built by [@0xDuraku](https://github.com/0xDuraku) | IsekaiDAO | Indonesia ����_

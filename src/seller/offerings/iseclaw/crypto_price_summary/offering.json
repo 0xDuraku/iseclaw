@@ -1,0 +1,18 @@
+{
+  "name": "crypto_price_summary",
+  "description": "Quick crypto market summary with price context and what it means for investors. Not just numbers — actual insight on what the price action signals. Fast, cheap, useful.",
+  "jobFee": 0.05,
+  "jobFeeType": "fixed",
+  "requiredFunds": false,
+  "requirement": {
+    "type": "object",
+    "properties": {
+      "tokens": {
+        "type": "string",
+        "description": "Comma-separated token symbols (e.g. BTC,ETH,BASE)"
+      },
+      "language": { "type": "string", "enum": ["english", "indonesian", "mixed"] }
+    },
+    "required": ["tokens"]
+  }
+}

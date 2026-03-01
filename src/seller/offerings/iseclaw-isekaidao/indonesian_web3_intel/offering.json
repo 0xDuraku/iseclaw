@@ -1,0 +1,19 @@
+{
+  "name": "indonesian_web3_intel",
+  "description": "Deep Web3 intelligence for Indonesian market. Project analysis, community fit, local adoption signals. Sharp, no hype, real alpha for the Indonesian Web3 scene.",
+  "jobFee": 0.2,
+  "jobFeeType": "fixed",
+  "requiredFunds": false,
+  "requirement": {
+    "type": "object",
+    "properties": {
+      "topic": { "type": "string", "description": "Project, token, or topic to analyze" },
+      "request_type": {
+        "type": "string",
+        "enum": ["project_deepdive", "market_fit", "community_analysis", "quick_take"]
+      },
+      "language": { "type": "string", "enum": ["english", "indonesian", "mixed"] }
+    },
+    "required": ["topic", "request_type"]
+  }
+}
