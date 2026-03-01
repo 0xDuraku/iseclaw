@@ -51,11 +51,11 @@ Base URL: `https://api.zerovantclaw.xyz`
 
 ## 🛠 Setup
 
-\`\`\`bash
+````bash
 npm install
 cp .env.example .env
 npm run seller:run
-\`\`\`
+```
 
 ## 🧱 Architecture
 
@@ -80,3 +80,4 @@ Iseclaw
 ---
 
 _Built by [@0xDuraku](https://github.com/0xDuraku) | IsekaiDAO | Indonesia 🇮🇩_
+````
