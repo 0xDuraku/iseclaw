@@ -80,13 +80,28 @@ app.get("/market-pulse", async (req, res) => {
         market_cap_change_24h: marketCapChange.toFixed(2) + "%",
         fear_and_greed: { value: fngValue, classification: fngClass },
         btc_dominance: btcDom ? btcDom.toFixed(1) + "%" : "N/A",
-        indonesian_community_focus: [
-          "Base ecosystem",
-          "Virtuals Protocol",
-          "Monad testnet",
-          "Solana GameFi",
-        ],
-        active_narratives: ["AI agents", "RWA", "DeFi yields", "Monad ecosystem"],
+        indonesian_community_focus: (() => {
+          const base = ["Base ecosystem", "Virtuals Protocol"];
+          if (fngValue < 25) base.push("Stablecoin yields");
+          else if (fngValue > 65) base.push("Meme coins");
+          else base.push("Monad testnet");
+          const dominance = parseFloat(btcDom) || 50;
+          if (dominance > 58) base.push("BTC season");
+          else base.push("Altcoin rotation");
+          return base;
+        })(),
+        active_narratives: (() => {
+          const n = ["AI agents"];
+          const mc = parseFloat(marketCapChange) || 0;
+          if (mc < -2) n.push("Buy the dip");
+          else if (mc > 2) n.push("Bull momentum");
+          else n.push("Sideways accumulation");
+          if (fngValue < 30) n.push("Fear = opportunity");
+          else if (fngValue > 70) n.push("Take profits");
+          else n.push("DeFi yields");
+          n.push(parseFloat(btcDom) > 55 ? "BTC dominance play" : "Altseason watch");
+          return n;
+        })(),
         risk_level: fngValue < 30 ? "high_opportunity" : fngValue > 70 ? "high_risk" : "medium",
       };
     });
