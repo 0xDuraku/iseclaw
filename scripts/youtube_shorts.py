@@ -102,7 +102,7 @@ def create_video(script, output_path, title):
         output_path
     ])
 
-def upload_youtube(video_path, title, description):
+def upload_youtube(video_path, title, description, topic_hint=""):
     with open('/root/youtube_token.pkl', 'rb') as f:
         creds = pickle.load(f)
 
@@ -119,9 +119,28 @@ def upload_youtube(video_path, title, description):
     media = MediaFileUpload(video_path, mimetype='video/mp4', resumable=True)
     request = youtube.videos().insert(part='snippet,status', body=body, media_body=media)
     response = request.execute()
-    print(f"Uploaded! ID: {response['id']}")
-    print(f"URL: https://youtube.com/shorts/{response['id']}")
-    return response['id']
+    video_id = response['id']
+    url = f"https://youtube.com/shorts/{video_id}"
+    print(f"Uploaded! ID: {video_id}")
+    print(f"URL: {url}")
+    
+    # Wait 5 menit untuk YouTube proses video
+    import time
+    print("Waiting 5 minutes for YouTube to process...")
+    time.sleep(300)
+    # Notify Discord
+    import subprocess, json
+    payload = {
+        "content": f"🦞 **Iseclaw Short baru!**\n{url}\n\n#{topic_hint} #Web3Indonesia #Shorts"
+    }
+    subprocess.run([
+        "curl", "-s", "-X", "POST",
+        "https://discord.com/api/webhooks/1477963161054478357/MgWTVK3x-peqLzMWlONDJZQcyqjcRpsAM_nNewqqLdlEQ4QTjD3obhXJ_7h8tcQ_zc9D",
+        "-H", "Content-Type: application/json",
+        "-d", json.dumps(payload)
+    ])
+    print("Discord notified!")
+    return video_id
 
 if __name__ == '__main__':
     import sys
@@ -140,4 +159,4 @@ if __name__ == '__main__':
 
     print('Uploading to YouTube...')
     description = f"{script}\n\n---\nIseclaw | IsekaiDAO\nhttps://x.com/IsekaiDAO\n#Web3Indonesia #IsekaiDAO #Crypto #Shorts"
-    upload_youtube('/tmp/yt_short.mp4', title, description)
+    upload_youtube('/tmp/yt_short.mp4', title, description, topic[:30])
