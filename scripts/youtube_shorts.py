@@ -132,7 +132,10 @@ if __name__ == '__main__':
     print(f'Generating script: {topic}')
     script = generate_script(topic)
     print(f'Script: {script[:100]}...')
-    description = f"{script}\n\n{description}"
+    # Sanitize description - hapus karakter invalid
+    import re
+    clean_script = re.sub(r'[<>]', '', script)
+    description = f"{clean_script}\n\n{description}"
 
     print('Generating TTS...')
     text_to_speech(script, '/tmp/yt_audio.mp3')
