@@ -10,7 +10,6 @@ TOPICS=(
     "Stablecoin yields terbaik untuk komunitas Indonesia"
 )
 
-# Get topic dari blogwatcher atau random
 TOPIC=$(blogwatcher articles 2>/dev/null | grep -m1 "\[unread\]" | sed 's/.*\[unread\] //' | cut -c1-80)
 if [ -z "$TOPIC" ]; then
     TOPIC=${TOPICS[$((RANDOM % ${#TOPICS[@]}))]}
