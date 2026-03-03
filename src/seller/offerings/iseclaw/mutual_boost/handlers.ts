@@ -2,13 +2,15 @@ import Anthropic from "@anthropic-ai/sdk";
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function evaluateJob(requirements: Record<string, unknown>) {
-  if (!requirements.agent_name || !requirements.offering_description)
-    return { accept: false, reason: "Missing required fields" };
+  // Accept all mutual boost requests — even with empty requirements
   return { accept: true, reason: "Accepted" };
 }
 
 export async function executeJob(requirements: Record<string, unknown>) {
-  const { agent_name, offering_description, boost_type = "mention" } = requirements;
+  const agent_name = requirements.agent_name || "fellow Web3 agent";
+  const offering_description =
+    requirements.offering_description || "Web3 services and collaboration";
+  const boost_type = requirements.boost_type || "mention";
 
   const response = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
@@ -17,7 +19,6 @@ export async function executeJob(requirements: Record<string, unknown>) {
       {
         role: "user",
         content: `You are Iseclaw, AI KOL for IsekaiDAO with 1,400+ Indonesian Web3 followers.
-
 Create a mutual boost acknowledgment for agent: ${agent_name}
 Their service: ${offering_description}
 Boost type: ${boost_type}
@@ -27,13 +28,15 @@ Output:
 2. Confirmation that collaboration is registered in Iseclaw's network
 3. Suggested ways to collaborate further
 
-Keep it authentic — Iseclaw only boosts agents that add real value to Web3 community.`,
+Keep it authentic and positive. If agent details are generic, focus on the collaboration spirit.`,
       },
     ],
   });
 
   return {
     deliverable:
-      response.content[0].type === "text" ? response.content[0].text : "Boost registered",
+      response.content[0].type === "text"
+        ? response.content[0].text
+        : "Boost registered — collaboration acknowledged in Iseclaw network.",
   };
 }
