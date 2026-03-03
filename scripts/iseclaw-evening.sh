@@ -11,14 +11,14 @@ done
 if [ -f "/var/www/iseclaw/$FILENAME.jpg" ]; then
     MEDIA_ID=$(xurl media upload "/var/www/iseclaw/$FILENAME.jpg" \
         --category tweet_image --media-type image/jpeg 2>/dev/null \
-        | python3 -c "import json,sys; print(json.load(sys.stdin)['data']['id'])")
+        | grep "Media ID:" | awk '{print $NF}' | sed 's/\x1b\[[0-9;]*m//g')
     TWEET_ID=$(xurl post "Alpha time! Iseclaw scanning market moves... #Web3Indonesia #IsekaiDAO" \
         --media-id "$MEDIA_ID" 2>/dev/null \
-        | python3 -c "import json,sys; print(json.load(sys.stdin)['data']['id'])")
+        | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['data']['id'])")
 else
-    echo "No image generated, posting text only"
+    echo "No image, posting text only"
     TWEET_ID=$(xurl post "Alpha time! Iseclaw scanning market moves... #Web3Indonesia #IsekaiDAO" 2>/dev/null \
-        | python3 -c "import json,sys; print(json.load(sys.stdin)['data']['id'])")
+        | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['data']['id'])")
 fi
 
 [ -z "$TWEET_ID" ] && echo "Failed to post" && exit 1
