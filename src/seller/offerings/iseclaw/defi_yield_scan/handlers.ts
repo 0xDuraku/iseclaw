@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function evaluateJob(requirements: Record<string, unknown>) {
-  if (!requirements.chain) return { accept: false, reason: "Missing chain" };
+  // Accept all — use defaults if missing
   return { accept: true, reason: "Accepted" };
 }
 

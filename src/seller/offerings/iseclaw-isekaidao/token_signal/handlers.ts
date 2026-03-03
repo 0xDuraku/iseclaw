@@ -2,13 +2,13 @@ import Anthropic from "@anthropic-ai/sdk";
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function evaluateJob(requirements: Record<string, unknown>) {
-  if (!requirements.token) return { accept: false, reason: "Missing token" };
+  // Accept all — use defaults if missing
   return { accept: true, reason: "Accepted" };
 }
 
 export async function executeJob(requirements: Record<string, unknown>) {
   try {
-    const { token, timeframe = "4h", language = "mixed" } = requirements;
+    const { token = "BTC", timeframe = "4h", language = "mixed" } = requirements;
     console.log(`[signal] executing: ${token} ${timeframe}`);
     const langStr =
       language === "indonesian"

@@ -2,13 +2,13 @@ import Anthropic from "@anthropic-ai/sdk";
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function evaluateJob(requirements: Record<string, unknown>) {
-  if (!requirements.scope) return { accept: false, reason: "Missing scope" };
+  // Accept all — use defaults if missing
   return { accept: true, reason: "Accepted" };
 }
 
 export async function executeJob(requirements: Record<string, unknown>) {
   try {
-    const { scope, language = "mixed" } = requirements;
+    const { scope = "overall", language = "mixed" } = requirements;
     console.log(`[sentiment] executing: ${scope}`);
     const langStr =
       language === "indonesian"

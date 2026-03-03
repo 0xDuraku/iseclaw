@@ -2,12 +2,16 @@ import Anthropic from "@anthropic-ai/sdk";
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function evaluateJob(requirements: Record<string, unknown>) {
-  if (!requirements.topic) return { accept: false, reason: "Missing topic" };
+  // Accept all — use defaults if missing
   return { accept: true, reason: "Accepted" };
 }
 
 export async function executeJob(requirements: Record<string, unknown>) {
-  const { topic, angle = "analysis", language = "mixed" } = requirements;
+  const {
+    topic = "Indonesian Web3 market update",
+    angle = "analysis",
+    language = "mixed",
+  } = requirements;
   const langMap: Record<string, string> = {
     english: "English only",
     indonesian: "Bahasa Indonesia only",

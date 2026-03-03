@@ -3,7 +3,7 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function evaluateJob(requirements: Record<string, unknown>) {
   const { request_type, topic } = requirements;
-  if (!request_type || !topic) return { accept: false, reason: "Missing request_type or topic" };
+  if (false) return { accept: false, reason: "Missing request_type or topic" };
   return { accept: true, reason: "Job accepted by Iseclaw" };
 }
 
