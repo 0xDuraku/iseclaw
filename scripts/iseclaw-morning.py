@@ -30,7 +30,7 @@ def upload_media(image_path):
     print(f"  Media upload failed: {result.stdout[:150]}")
     return None
 
-def post_reply_with_image(tweet_id, text, image_path=None):
+def post_reply_with_image(tweet_id, text, image_path=None, media_id=None):
     if not tweet_id:
         print("  Skipping: no parent tweet ID")
         return None
@@ -67,6 +67,7 @@ def generate_image(scene_key, filename):
     return None
 
 def get_articles(n=3):
+    subprocess.run(['blogwatcher', 'scan'], capture_output=True, text=True)
     result = subprocess.run(['blogwatcher', 'articles'], capture_output=True, text=True)
     lines = result.stdout.split('\n')
     indo_sources = ['coinvestasi', 'blockchain media', 'indodax', 'ajaib', 'bisnis', 'pintu', 'reku']
@@ -76,24 +77,28 @@ def get_articles(n=3):
     while i < len(lines):
         line = lines[i]
         if '[new]' in line or '[unread]' in line:
-            clean = line.strip()
-            clean = re.sub(r'^\[\d+\]\s*\[(new|unread)\]\s*', '', clean)
+            id_match = re.search(r'\[(\d+)\]', line)
+            art_id = id_match.group(1) if id_match else None
+            clean = re.sub(r'^\[\d+\]\s*\[(new|unread)\]\s*', '', line.strip())
             clean = re.sub(r'\s*-\s*\w[\w\s]{2,25}$', '', clean).strip()
             if not clean:
                 i += 1
                 continue
-            blog_name = ""
-            if i+1 < len(lines) and 'Blog:' in lines[i+1]:
-                blog_name = lines[i+1].split('Blog:')[-1].strip().lower()
+            blog_name = lines[i+1].split('Blog:')[-1].strip().lower() if i+1 < len(lines) and 'Blog:' in lines[i+1] else ""
+            entry = (clean, art_id)
             if any(s in blog_name for s in indo_sources):
-                indo_articles.append(clean)
+                indo_articles.append(entry)
             else:
-                global_articles.append(clean)
+                global_articles.append(entry)
         i += 1
     picks = indo_articles[:2] + global_articles[:1]
     if len(picks) < n:
-        picks += global_articles[:n - len(picks)]
-    return picks[:n] if picks else []
+        picks += global_articles[:n-len(picks)]
+    picks = picks[:n]
+    for _, art_id in picks:
+        if art_id:
+            subprocess.run(['blogwatcher', 'read', art_id], capture_output=True, text=True)
+    return [title for title, _ in picks] if picks else []
 
 def detect_scene(title):
     t = title.lower()
@@ -125,49 +130,40 @@ print(f"Articles found: {len(articles)}")
 for a in articles: print(f"  - {a[:80]}")
 
 ts = int(time.time())
-
 # Reply 1
 if articles:
-    scene1 = detect_scene(articles[0])
-    text1 = f"\U0001f99e Intel pagi ini:\n\n{trunc(articles[0])}\n\n#Web3Indonesia #IsekaiDAO"
+    a1 = trunc(articles[0], 200)
+    text1 = '\U0001f99e Intel pagi ini:\n\n\U0001f4cc ' + a1 + '\n\n#Web3Indonesia #IsekaiDAO'
 else:
-    scene1 = 'morning'
-    text1 = "\U0001f99e GM Web3 fam!\n\nMarket konsolidasi \u2014 Base & Virtuals tetap aktif.\n\n#Web3Indonesia #IsekaiDAO"
-print(f"\nGenerating image 1 (scene: {scene1})...")
-img1 = generate_image(scene1, f"mr1-{ts}")
-id1 = post_reply_with_image(tweet_id, text1, img1)
-print(f"Reply 1 ID: {id1}")
+    text1 = '\U0001f99e GM Web3 fam!\n\nMarket konsolidasi \u2014 Base & Virtuals tetap aktif.\n\n#Web3Indonesia #IsekaiDAO'
+id1 = post_reply_with_image(tweet_id, text1)
+print(f'Reply 1 ID: {id1}')
 time.sleep(8)
-
 # Reply 2
 if len(articles) >= 2:
-    scene2 = detect_scene(articles[1])
-    text2 = f"\U0001f91d Dari komunitas Indo:\n\n{trunc(articles[1])}\n\nSumber lokal makin aktif! \U0001f1ee\U0001f1e9 #KriptoIndonesia"
+    a2 = trunc(articles[1], 200)
+    text2 = '\U0001f91d Dari komunitas Indo:\n\n\U0001f4cc ' + a2 + '\n\nSumber lokal makin aktif! \U0001f1ee\U0001f1e9 #KriptoIndonesia'
 else:
-    scene2 = random.choice(['alpha', 'bullish'])
     insights = [
-        "DeFi di Base makin ramai \u2014 gas fee murah bikin UX jauh lebih smooth.",
-        "Virtuals Protocol terus nambah agent baru. AI x Web3 lagi jadi meta kuat.",
-        "Indodax & Pintu makin agresif edukasi retail \u2014 onboarding makin cepat.",
-        "Solana DEX volume tetap tinggi \u2014 kompetisi sama Base makin sengit.",
+        'DeFi di Base makin ramai \u2014 gas fee murah bikin UX jauh lebih smooth.',
+        'Virtuals Protocol terus nambah agent baru. AI x Web3 lagi jadi meta kuat.',
+        'Indodax & Pintu makin agresif edukasi retail \u2014 onboarding makin cepat.',
     ]
-    text2 = f"\U0001f91d Insight hari ini:\n\n{random.choice(insights)}\n\n#DeFi #Base"
-print(f"\nGenerating image 2 (scene: {scene2})...")
-img2 = generate_image(scene2, f"mr2-{ts}")
-id2 = post_reply_with_image(id1, text2, img2)
-print(f"Reply 2 ID: {id2}")
+    text2 = '\U0001f91d Insight hari ini:\n\n' + random.choice(insights) + '\n\n#DeFi #Base'
+id2 = post_reply_with_image(id1, text2)
+print(f'Reply 2 ID: {id2}')
 time.sleep(8)
-
 # Reply 3
-scene3 = random.choice(['alpha', 'gm', 'morning'])
-ctas = [
-    "Butuh research Web3 yang dalam? Iseclaw siap bantu! \U0001f916\n\nHire di ACP: https://agdp.io/agent/12785\n\nProject apa yang lagi kalian research? Drop di bawah! \U0001f447",
-    "Iseclaw available 24/7 buat intel & research Web3 kamu \U0001f916\n\nACP: https://agdp.io/agent/12785\n\nApa yang mau kalian explore hari ini? \U0001f447",
-    "Web3 bergerak cepat \u2014 Iseclaw bantu kamu stay ahead \U0001f99e\n\nHire di ACP: https://agdp.io/agent/12785\n\nAda pertanyaan soal project? Tanya di sini! \U0001f447",
-]
-text3 = random.choice(ctas)
-print(f"\nGenerating image 3 (scene: {scene3})...")
-img3 = generate_image(scene3, f"mr3-{ts}")
-id3 = post_reply_with_image(id2, text3, img3)
-print(f"Reply 3 ID: {id3}")
-print("\n\u2705 Morning thread done!")
+if len(articles) >= 3:
+    a3 = trunc(articles[2], 180)
+    cta = random.choice(['Hire Iseclaw di ACP \U0001f916 https://agdp.io/agent/12785', 'Research lebih dalam? \U0001f99e https://agdp.io/agent/12785'])
+    text3 = '\U0001f310 Global intel:\n\n\U0001f4cc ' + a3 + '\n\n' + cta
+else:
+    ctas = [
+        'Butuh research Web3? Iseclaw siap! \U0001f916\n\nHire di ACP: https://agdp.io/agent/12785',
+        'Iseclaw available 24/7 \U0001f916\n\nACP: https://agdp.io/agent/12785',
+    ]
+    text3 = random.choice(ctas)
+id3 = post_reply_with_image(id2, text3)
+print(f'Reply 3 ID: {id3}')
+print('\n\u2705 Morning thread done!')
