@@ -1,6 +1,9 @@
 import requests, trafilatura, time
 
-VENICE_KEY = "VENICE_INFERENCE_KEY_1gY_6KbUPvfk1oYMNZVPO9lRDvZPkZu8AmhPHxA-KI"
+import os
+from dotenv import load_dotenv
+load_dotenv("/root/iseclaw-acp/.env")
+VENICE_KEY = os.getenv("VENICE_API_KEY", "")
 MODEL = "zai-org-glm-4.7-flash"
 
 def fetch_insight(title, url, lang="indo"):
