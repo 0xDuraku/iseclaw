@@ -1,4 +1,6 @@
-import subprocess, os, json, time, random, re
+import subprocess, os, json, time, random, re, sys
+sys.path.insert(0, '/root/iseclaw-acp/scripts')
+from fetch_article import fetch_insight
 from datetime import datetime
 
 def get_tweet_id(file):
@@ -85,7 +87,13 @@ def get_articles(n=3):
                 i += 1
                 continue
             blog_name = lines[i+1].split('Blog:')[-1].strip().lower() if i+1 < len(lines) and 'Blog:' in lines[i+1] else ""
-            entry = (clean, art_id)
+            url = ''
+            for j in range(i+1, min(i+4, len(lines))):
+                url_match = re.search(r'URL: (https?://\S+)', lines[j])
+                if url_match:
+                    url = url_match.group(1)
+                    break
+            entry = {'title': clean, 'id': art_id, 'url': url, 'blog': blog_name}
             if any(s in blog_name for s in indo_sources):
                 indo_articles.append(entry)
             else:
@@ -95,10 +103,10 @@ def get_articles(n=3):
     if len(picks) < n:
         picks += global_articles[:n-len(picks)]
     picks = picks[:n]
-    for _, art_id in picks:
-        if art_id:
-            subprocess.run(['blogwatcher', 'read', art_id], capture_output=True, text=True)
-    return [title for title, _ in picks] if picks else []
+    for a in picks:
+        if a['id']:
+            subprocess.run(['blogwatcher', 'read', a['id']], capture_output=True, text=True)
+    return picks
 
 def detect_scene(title):
     t = title.lower()
@@ -127,13 +135,14 @@ if not tweet_id:
 print(f"Replying to: {tweet_id}")
 articles = get_articles(3)
 print(f"Articles found: {len(articles)}")
-for a in articles: print(f"  - {a[:80]}")
+for a in articles: print(f"  - {a['title'][:80]}")
 
 ts = int(time.time())
 # Reply 1
 if articles:
-    a1 = trunc(articles[0], 200)
-    text1 = '\U0001f99e Intel pagi ini:\n\n\U0001f4cc ' + a1 + '\n\n#Web3Indonesia #IsekaiDAO'
+    a1_title, a1_url = articles[0]['title'], articles[0]['url']
+    a1_insight = fetch_insight(a1_title, a1_url, lang='indo') or trunc(articles[0]['title'], 200)
+    text1 = '\U0001f99e Intel pagi ini:\n\n' + a1_insight + '\n\n#Web3Indonesia #IsekaiDAO'
 else:
     text1 = '\U0001f99e GM Web3 fam!\n\nMarket konsolidasi \u2014 Base & Virtuals tetap aktif.\n\n#Web3Indonesia #IsekaiDAO'
 id1 = post_reply_with_image(tweet_id, text1)
@@ -141,8 +150,8 @@ print(f'Reply 1 ID: {id1}')
 time.sleep(8)
 # Reply 2
 if len(articles) >= 2:
-    a2 = trunc(articles[1], 200)
-    text2 = '\U0001f91d Dari komunitas Indo:\n\n\U0001f4cc ' + a2 + '\n\nSumber lokal makin aktif! \U0001f1ee\U0001f1e9 #KriptoIndonesia'
+    a2_insight = fetch_insight(articles[1]['title'], articles[1]['url'], lang='indo') or trunc(articles[1]['title'], 200)
+    text2 = '\U0001f91d Dari komunitas Indo:\n\n' + a2_insight + '\n\nSumber lokal makin aktif! \U0001f1ee\U0001f1e9 #KriptoIndonesia'
 else:
     insights = [
         'DeFi di Base makin ramai \u2014 gas fee murah bikin UX jauh lebih smooth.',
@@ -155,9 +164,9 @@ print(f'Reply 2 ID: {id2}')
 time.sleep(8)
 # Reply 3
 if len(articles) >= 3:
-    a3 = trunc(articles[2], 180)
+    a3_insight = fetch_insight(articles[2]['title'], articles[2]['url'], lang='en') or trunc(articles[2]['title'], 180)
     cta = random.choice(['Hire Iseclaw di ACP \U0001f916 https://agdp.io/agent/12785', 'Research lebih dalam? \U0001f99e https://agdp.io/agent/12785'])
-    text3 = '\U0001f310 Global intel:\n\n\U0001f4cc ' + a3 + '\n\n' + cta
+    text3 = '\U0001f310 Global intel:\n\n' + a3_insight + '\n\n' + cta
 else:
     ctas = [
         'Butuh research Web3? Iseclaw siap! \U0001f916\n\nHire di ACP: https://agdp.io/agent/12785',

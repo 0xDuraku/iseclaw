@@ -67,7 +67,13 @@ def get_articles(n=3):
                 i += 1
                 continue
             blog_name = lines[i+1].split('Blog:')[-1].strip().lower() if i+1 < len(lines) and 'Blog:' in lines[i+1] else ""
-            entry = (clean, art_id)
+            url = ''
+            for j in range(i+1, min(i+4, len(lines))):
+                url_match = re.search(r'URL: (https?://\S+)', lines[j])
+                if url_match:
+                    url = url_match.group(1)
+                    break
+            entry = {'title': clean, 'id': art_id, 'url': url, 'blog': blog_name}
             if any(s in blog_name for s in indo_sources):
                 indo_articles.append(entry)
             else:
@@ -77,10 +83,10 @@ def get_articles(n=3):
     if len(picks) < n:
         picks += global_articles[:n-len(picks)]
     picks = picks[:n]
-    for _, art_id in picks:
-        if art_id:
-            subprocess.run(['blogwatcher', 'read', art_id], capture_output=True, text=True)
-    return [title for title, _ in picks] if picks else []
+    for a in picks:
+        if a['id']:
+            subprocess.run(['blogwatcher', 'read', a['id']], capture_output=True, text=True)
+    return picks
 
 def detect_scene(title):
     t = title.lower()
@@ -106,8 +112,8 @@ ts = int(time.time())
 
 # Reply 1
 if articles:
-    a1 = trunc(articles[0], 200)
-    text1 = '\U0001f31e Update siang:\n\n\U0001f4cc ' + a1 + '\n\n#Web3Indonesia #IsekaiDAO'
+    a1_insight = fetch_insight(articles[0]['title'], articles[0]['url'], lang='indo') or trunc(articles[0]['title'], 200)
+    text1 = '\U0001f31e Update siang:\n\n\U0001f4cc ' + a1_insight + '\n\n#Web3Indonesia #IsekaiDAO'
 else:
     text1 = '\U0001f31e Update siang:\n\nMarket update \u2014 pantau terus alpha terbaru.\n\n#Web3Indonesia #IsekaiDAO'
 id1 = post_reply_with_image(tweet_id, text1)
@@ -115,8 +121,8 @@ print(f'Reply 1 ID: {id1}')
 time.sleep(8)
 # Reply 2
 if len(articles) >= 2:
-    a2 = trunc(articles[1], 200)
-    text2 = '\U0001f91d Dari komunitas Indo:\n\n\U0001f4cc ' + a2 + '\n\nSumber lokal makin aktif! \U0001f1ee\U0001f1e9 #KriptoIndonesia'
+    a2_insight = fetch_insight(articles[1]['title'], articles[1]['url'], lang='indo') or trunc(articles[1]['title'], 200)
+    text2 = '\U0001f91d Dari komunitas Indo:\n\n\U0001f4cc ' + a2_insight + '\n\nSumber lokal makin aktif! \U0001f1ee\U0001f1e9 #KriptoIndonesia'
 else:
     text2 = '\U0001f91d Insight:\n\nBase ecosystem terus berkembang. DeFi & AI agent jadi narasi kuat.\n\n#Base #DeFi'
 id2 = post_reply_with_image(id1, text2)
@@ -124,9 +130,9 @@ print(f'Reply 2 ID: {id2}')
 time.sleep(8)
 # Reply 3
 if len(articles) >= 3:
-    a3 = trunc(articles[2], 180)
+    a3_insight = fetch_insight(articles[2]['title'], articles[2]['url'], lang='en') or trunc(articles[2]['title'], 180)
     cta = random.choice(['Hire Iseclaw di ACP \U0001f916 https://agdp.io/agent/12785', 'Research lebih dalam? \U0001f99e https://agdp.io/agent/12785'])
-    text3 = '\U0001f310 Global intel:\n\n\U0001f4cc ' + a3 + '\n\n' + cta
+    text3 = '\U0001f310 Global intel:\n\n\U0001f4cc ' + a3_insight + '\n\n' + cta
 else:
     text3 = 'Iseclaw available 24/7 \U0001f916\n\nACP: https://agdp.io/agent/12785'
 id3 = post_reply_with_image(id2, text3)
