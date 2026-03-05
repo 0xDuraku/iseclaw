@@ -34,7 +34,10 @@ def fetch_insight(title, url, lang="indo"):
                 )
                 msg = resp.json()['choices'][0]['message']
                 result = (msg.get('content') or msg.get('reasoning_content', '')).strip()
-                return result if len(result) > 20 else None
+                # Strip common preambles
+import re as _re
+result = _re.sub(r'^(Here is (your )?insight:|Insight:|Berikut insight[^:]*:)\s*', '', result, flags=_re.IGNORECASE).strip()
+return result if len(result) > 20 else None
             except Exception:
                 if attempt == 0:
                     time.sleep(5)
