@@ -1,4 +1,6 @@
 import subprocess, os, sys, json, time, random, re
+sys.path.insert(0, "/root/iseclaw-acp/scripts")
+from fetch_article import fetch_insight
 
 def upload_media(image_path):
     if not image_path or not os.path.exists(image_path):
