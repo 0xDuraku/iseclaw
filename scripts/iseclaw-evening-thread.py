@@ -52,7 +52,8 @@ def get_articles(n=3):
     subprocess.run(['blogwatcher', 'scan'], capture_output=True, text=True)
     result = subprocess.run(['blogwatcher', 'articles'], capture_output=True, text=True)
     lines = result.stdout.split('\n')
-    indo_sources = ['coinvestasi', 'blockchain media', 'indodax', 'ajaib', 'bisnis', 'pintu', 'reku']
+    indo_sources = ['blockchain media', 'indodax']
+    scrapable_sources = ['blockchain media', 'coindesk', 'cointelegraph', 'decrypt', 'blockworks', 'thedefiant', 'indodax']
     indo_articles = []
     global_articles = []
     i = 0
@@ -74,6 +75,8 @@ def get_articles(n=3):
                     url = url_match.group(1)
                     break
             entry = {'title': clean, 'id': art_id, 'url': url, 'blog': blog_name}
+            if not any(s in blog_name for s in scrapable_sources):
+                continue  # skip non-scrapable
             if any(s in blog_name for s in indo_sources):
                 indo_articles.append(entry)
             else:
