@@ -78,6 +78,7 @@ def get_articles(n=3):
                     break
             entry = {'title': clean, 'id': art_id, 'url': url, 'blog': blog_name}
             if not any(s in blog_name for s in scrapable_sources):
+                i += 1
                 continue  # skip non-scrapable
             if any(s in blog_name for s in indo_sources):
                 indo_articles.append(entry)
