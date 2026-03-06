@@ -1,15 +1,28 @@
-import requests, trafilatura, time
-
-import os
+import requests, trafilatura, time, os, re, signal
 from dotenv import load_dotenv
 load_dotenv("/root/iseclaw-acp/.env")
+
 VENICE_KEY = os.getenv("VENICE_API_KEY", "")
 MODEL = "zai-org-glm-4.7-flash"
 
+class TimeoutError(Exception):
+    pass
+
+def _timeout_handler(signum, frame):
+    raise TimeoutError("fetch timeout")
+
 def fetch_insight(title, url, lang="indo"):
     try:
-        downloaded = trafilatura.fetch_url(url)
-        content = trafilatura.extract(downloaded, include_comments=False, include_tables=False)
+        # Hard timeout 20 detik untuk seluruh fungsi
+        signal.signal(signal.SIGALRM, _timeout_handler)
+        signal.alarm(20)
+        
+        try:
+            downloaded = trafilatura.fetch_url(url)
+            content = trafilatura.extract(downloaded, include_comments=False, include_tables=False)
+        finally:
+            signal.alarm(0)
+            
         if not content or len(content) < 150:
             return None
 
@@ -18,30 +31,27 @@ def fetch_insight(title, url, lang="indo"):
         else:
             prompt = f"Write 1-2 sentence insight from this crypto article for Twitter. Max 220 chars. Direct, no hashtags, no emoji.\n\nTitle: {title}\nContent: {content[:600]}"
 
-        # Retry 2x kalau timeout
-        for attempt in range(2):
-            try:
-                resp = requests.post(
-                    "https://api.venice.ai/api/v1/chat/completions",
-                    headers={"Authorization": f"Bearer {VENICE_KEY}", "Content-Type": "application/json"},
-                    json={
-                        "model": MODEL,
-                        "max_tokens": 120,
-                        "venice_parameters": {"disable_thinking": True},
-                        "messages": [{"role": "user", "content": prompt}]
-                    },
-                    timeout=25
-                )
-                msg = resp.json()['choices'][0]['message']
-                result = (msg.get('content') or msg.get('reasoning_content', '')).strip()
-                # Strip common preambles
-                import re as _re
-                result = _re.sub(r'^(Here is (your )?insight:|Insight:|Berikut insight[^:]*:)\s*', '', result, flags=_re.IGNORECASE).strip()
-                return result if len(result) > 20 else None
-            except Exception:
-                if attempt == 0:
-                    time.sleep(5)
-                continue
-        return None
-    except Exception:
+        signal.signal(signal.SIGALRM, _timeout_handler)
+        signal.alarm(15)
+        try:
+            resp = requests.post(
+                "https://api.venice.ai/api/v1/chat/completions",
+                headers={"Authorization": f"Bearer {VENICE_KEY}", "Content-Type": "application/json"},
+                json={
+                    "model": MODEL,
+                    "max_tokens": 120,
+                    "venice_parameters": {"disable_thinking": True},
+                    "messages": [{"role": "user", "content": prompt}]
+                },
+                timeout=12
+            )
+            msg = resp.json()['choices'][0]['message']
+            result = (msg.get('content') or msg.get('reasoning_content', '')).strip()
+            result = re.sub(r'^(Here is (your )?insight:|Insight:|Berikut insight[^:]*:)\s*', '', result, flags=re.IGNORECASE).strip()
+            return result if len(result) > 20 else None
+        finally:
+            signal.alarm(0)
+
+    except Exception as e:
+        print(f"  fetch_insight error: {e}", flush=True)
         return None
