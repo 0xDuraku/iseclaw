@@ -67,7 +67,7 @@ export default function Sidebar({ active, onNavigate }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10, color: 'var(--cyan)' }}>
           <LiveDot /> SCANNING LIVE
         </div>
-        <div style={{ fontSize: 9, color: 'var(--muted)', marginTop: 6 }}>Solana · BNB · Base</div>
+        <div style={{ fontSize: 9, color: 'var(--muted)', marginTop: 6 }}>Solana</div>
       </div>
     </aside>
   )

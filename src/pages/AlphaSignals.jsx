@@ -11,7 +11,7 @@ export default function AlphaSignals() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
         <div>
           <div style={{ fontFamily: 'Orbitron, monospace', fontSize: 14, fontWeight: 700, color: '#fff', letterSpacing: '.06em' }}>ALPHA SIGNALS</div>
-          <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 3 }}>Real-time on-chain signal detection — Solana, BNB, Base</div>
+          <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 3 }}>Real-time on-chain signal detection — Solana</div>
         </div>
         <LiveBadge label="SCANNING" />
       </div>

@@ -64,7 +64,7 @@ export default function Dashboard({ onNavigate }) {
               On-chain signals untuk<br /><span style={{ color: 'var(--blue)' }}>komunitas Web3 Indonesia</span>
             </h1>
             <p style={{ fontSize: 13, color: 'var(--muted2)', lineHeight: 1.7, marginBottom: '1.25rem', maxWidth: 460 }}>
-              Iseclaw mendeteksi smart money movement, bundle patterns, dan accumulation signals di Solana, BNB, dan Base — gratis untuk semua orang.
+              Iseclaw mendeteksi smart money movement, bundle patterns, dan accumulation signals di Solana — gratis untuk komunitas Web3 Indonesia.
             </p>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {[
@@ -86,7 +86,7 @@ export default function Dashboard({ onNavigate }) {
             {[
               { val: fng ?? '--', label: 'Fear & Greed Index', color: fngColor },
               { val: btcDom, label: 'BTC Dominance', color: 'var(--blue)' },
-              { val: 'SOL BNB BASE', label: 'Chains covered', color: 'var(--green)' },
+              { val: 'SOLANA', label: 'Chain covered', color: 'var(--green)' },
             ].map(k => (
               <div key={k.label} style={{ background: 'rgba(255,255,255,.04)', border: '1px solid var(--b2)', borderRadius: 12, padding: '14px 16px', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: k.color, borderRadius: '3px 0 0 3px' }} />
