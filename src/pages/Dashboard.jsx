@@ -48,11 +48,14 @@ export default function Dashboard({ onNavigate }) {
       </div>
 
       {/* Hero */}
-      <div style={{ background: 'var(--bg1)', border: '1px solid var(--b1)', borderRadius: 16, padding: '2.5rem 2rem', marginBottom: '1.25rem', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: -60, right: -60, width: 320, height: 320, background: 'radial-gradient(circle,rgba(14,165,233,.12) 0%,transparent 65%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: -40, left: '30%', width: 200, height: 200, background: 'radial-gradient(circle,rgba(6,182,212,.07) 0%,transparent 65%)', pointerEvents: 'none' }} />
+      <div style={{ border: '1px solid var(--b1)', borderRadius: 16, padding: '2.5rem 2rem', marginBottom: '1.25rem', position: 'relative', overflow: 'hidden', minHeight: 320, background: 'var(--bg1)' }}>
+        <img src="/mascot.jpg" alt="" style={{ position: 'absolute', top: 0, right: 0, height: '100%', width: '55%', objectFit: 'cover', objectPosition: 'top center', pointerEvents: 'none', display: 'block' }} />
+        <div style={{ position: 'absolute', top: 0, right: 0, width: '55%', height: '100%', background: 'linear-gradient(to right, var(--bg1) 0%, var(--bg1) 15%, rgba(6,13,26,.7) 45%, transparent 100%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, transparent 60%, var(--bg1) 100%)', pointerEvents: 'none' }} />
+
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem', position: 'relative', zIndex: 1, flexWrap: 'wrap' }}>
-          <div style={{ flex: 1, minWidth: 280 }}>
+
+          <div style={{ flex: 1, minWidth: 280, order: 1 }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 9, color: 'var(--cyan)', background: 'rgba(6,182,212,.08)', border: '1px solid rgba(6,182,212,.2)', padding: '4px 12px', borderRadius: 20, marginBottom: '1rem', fontWeight: 600, letterSpacing: '.08em' }}>
               <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--cyan)', display: 'inline-block', animation: 'blink 1.5s ease-in-out infinite' }} />
               SOUTHEAST ASIA ALPHA INTELLIGENCE
@@ -78,8 +81,7 @@ export default function Dashboard({ onNavigate }) {
               ))}
             </div>
           </div>
-          <img src="/mascot.gif" onError={e => e.target.src='/mascot.jpg'}
-            style={{ width: 120, height: 120, borderRadius: 16, border: '1.5px solid var(--b2)', objectFit: 'cover', flexShrink: 0 }} />
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, minWidth: 180 }}>
             {[
               { val: fng ?? '--', label: 'Fear & Greed Index', color: fngColor },
