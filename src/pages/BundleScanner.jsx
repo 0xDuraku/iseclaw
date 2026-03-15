@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Search, AlertTriangle, CheckCircle, ExternalLink, Users, PieChart, Clock, Shield, Zap, Code, Twitter, Globe, TrendingUp } from 'lucide-react'
 import { Card, CardHeader, Badge, StatBox, LiveBadge } from '../components/Card.jsx'
+import HolderBubble from '../components/HolderBubble.jsx'
 
 const COLORS = ['#0ea5e9','#06b6d4','#818cf8','#10b981','#f59e0b','#f97316','#f43f5e','#6b8fa8']
 
@@ -622,6 +623,15 @@ export default function BundleScanner() {
               </div>
             </Card>
           </div>
+
+          {/* HOLDER BUBBLE VISUALIZATION */}
+          {(r.holders?.details||[]).length > 0 && (
+            <Card style={{ marginBottom:'1rem' }}>
+              <CardHeader title="HOLDER VISUALIZATION" icon={Users}
+                badge={{ label:(r.holders?.total||0)+' holders', variant:'muted' }}/>
+              <HolderBubble holders={r.holders?.details||[]} totalMcap={r.marketCap}/>
+            </Card>
+          )}
 
           {/* Dev Wallet + Sniper */}
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'1rem', marginBottom:'1rem' }}>

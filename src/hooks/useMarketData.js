@@ -6,7 +6,9 @@ export function useMarketData() {
     const load = async () => {
       try {
         const r = await fetch('/api/market/market-pulse')
-        setData(await r.json())
+        const json = await r.json()
+        console.log('market-pulse data:', json?.fear_and_greed?.value)
+        setData(json)
       } catch(e) { console.error('market-pulse error:', e) }
     }
     load()
