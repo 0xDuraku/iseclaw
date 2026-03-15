@@ -84,7 +84,7 @@ function HolderRow({ owner, pct, rank, isLP, lpLabel, isKOL, kolLabel, funding, 
       </td>
       <td style={{ padding:'8px 0', borderBottom:'1px solid var(--b1)', textAlign:'right', color: pct>20?'var(--red)':pct>5?'var(--amber)':'#fff', fontFamily:'Space Mono,monospace', fontSize:11, fontWeight:600 }}>{pct?.toFixed(1)}%</td>
       <td style={{ padding:'8px 0', borderBottom:'1px solid var(--b1)', textAlign:'right', fontFamily:'Space Mono,monospace', fontSize:10, color:'var(--muted2)' }}>
-        {isLP ? '—' : solBalance != null ? solBalance.toFixed(2)+'◎' : '?'}
+        {isLP ? '—' : fmtSol(solBalance)}
       </td>
       <td style={{ padding:'8px 0', borderBottom:'1px solid var(--b1)', textAlign:'right' }}>
         <span style={{ fontSize:9, color:ageColor }}>{isLP ? '—' : fmtAge(ageDays)}</span>
@@ -394,23 +394,57 @@ export default function BundleScanner() {
                   {dev.fundingSource?.type==='cex' && <span style={{ fontSize:9, padding:'2px 6px', borderRadius:8, background:'rgba(16,185,129,.15)', color:'var(--green)', fontWeight:600 }}>CEX</span>}
                 </div>
               </div>
+              {/* Dev wallet age */}
+              {dev.ageDays !== undefined && (
+                <div style={{ display:'flex', gap:16, marginBottom:10 }}>
+                  <div>
+                    <div style={{ fontSize:9, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:3 }}>Wallet Age</div>
+                    <span style={{ fontSize:11, color: dev.ageDays < 7 ? 'var(--red)' : dev.ageDays < 30 ? 'var(--amber)' : 'var(--muted2)' }}>
+                      {fmtAge(dev.ageDays)} {dev.firstSeen ? '('+dev.firstSeen+')' : ''}
+                    </span>
+                  </div>
+                  <div>
+                    <div style={{ fontSize:9, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:3 }}>SOL Balance</div>
+                    <span style={{ fontSize:11, color:'var(--muted2)' }}>{fmtSol(dev.solBalance)}</span>
+                  </div>
+                </div>
+              )}
               {dev.deployedTokens?.length>0 && (
                 <div>
-                  <div style={{ fontSize:9, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Previously Deployed</div>
+                  <div style={{ fontSize:9, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>
+                    Previously Deployed ({dev.deployCount} tokens)
+                  </div>
                   <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
                     {dev.deployedTokens.slice(0,5).map((t,i)=>(
-                      <div key={i} style={{ background:'var(--bg2)', border:'1px solid var(--b1)', borderRadius:8, padding:'8px 10px' }}>
-                        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:3 }}>
-                          <span style={{ fontSize:11, fontWeight:600, color:'#fff' }}>{t.symbol||'?'}</span>
-                          {t.athMcap>0 && <span style={{ fontSize:10, color:'var(--green)', fontFamily:'Space Mono,monospace' }}>ATH: {fmt(t.athMcap)}</span>}
+                      <div key={i} style={{ background:'var(--bg2)', border:`1px solid ${t.isBonding ? 'rgba(16,185,129,.3)' : 'var(--b1)'}`, borderRadius:8, padding:'8px 10px' }}>
+                        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:4 }}>
+                          <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                            <span style={{ fontSize:12, fontWeight:700, color:'#fff', fontFamily:'Orbitron,monospace' }}>{t.symbol||'?'}</span>
+                            {t.isBonding && <span style={{ fontSize:8, padding:'1px 5px', borderRadius:6, background:'rgba(16,185,129,.15)', color:'var(--green)', fontWeight:700 }}>LIVE</span>}
+                          </div>
+                          <div style={{ textAlign:'right' }}>
+                            {t.currentMcap>0 && <div style={{ fontSize:10, color:'var(--blue)', fontFamily:'Space Mono,monospace' }}>{fmt(t.currentMcap)}</div>}
+                            {t.athMcap>0 && <div style={{ fontSize:9, color:'var(--muted)' }}>ATH: {fmt(t.athMcap)}</div>}
+                          </div>
                         </div>
-                        <a href={`https://solscan.io/token/${t.mint}`} target="_blank" rel="noreferrer"
-                          style={{ fontFamily:'Space Mono,monospace', fontSize:9, color:'var(--blue)', textDecoration:'none', display:'flex', alignItems:'center', gap:3 }}>
-                          {t.mint?.slice(0,14)}... <ExternalLink size={8}/>
-                        </a>
+                        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                          <a href={`https://solscan.io/token/${t.mint}`} target="_blank" rel="noreferrer"
+                            style={{ fontFamily:'Space Mono,monospace', fontSize:9, color:'var(--blue)', textDecoration:'none', display:'flex', alignItems:'center', gap:3 }}>
+                            {t.mint?.slice(0,10)}...{t.mint?.slice(-4)} <ExternalLink size={8}/>
+                          </a>
+                          <a href={`https://dexscreener.com/solana/${t.mint}`} target="_blank" rel="noreferrer"
+                            style={{ fontSize:9, color:'var(--muted)', textDecoration:'none', display:'flex', alignItems:'center', gap:2 }}>
+                            DEX <ExternalLink size={7}/>
+                          </a>
+                        </div>
                       </div>
                     ))}
                   </div>
+                </div>
+              )}
+              {dev.deployedTokens?.length===0 && dev.deployCount>0 && (
+                <div style={{ fontSize:11, color:'var(--muted)', padding:'8px 0' }}>
+                  {dev.deployCount} token deployment detected — fetching details...
                 </div>
               )}
             </>) : <div style={{ color:'var(--muted)', fontSize:11, padding:'1rem 0' }}>Dev wallet not identified</div>}
