@@ -813,56 +813,6 @@ export default function BundleScanner() {
             </Card>
           </div>
 
-          {/* INVESTMENT VERDICT */}
-          {verdict && (
-            <div style={{ background:'var(--bg1)', border:`2px solid ${verdict.color}`, borderRadius:14, padding:'1.5rem', marginBottom:'1rem', position:'relative', overflow:'hidden' }}>
-              <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${verdict.color},transparent)` }}/>
-              <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'1rem', flexWrap:'wrap' }}>
-                <div style={{ flex:1 }}>
-                  <div style={{ fontSize:9, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.1em', marginBottom:8 }}>INVESTMENT VERDICT</div>
-                  <div style={{ fontFamily:'Orbitron,monospace', fontSize:18, fontWeight:700, color:verdict.color, marginBottom:6 }}>
-                    {verdict.emoji} {verdict.verdict}
-                  </div>
-                  <div style={{ fontSize:11, color:'var(--muted2)', marginBottom:12 }}>
-                    Composite risk score: <span style={{ color:verdict.color, fontWeight:700 }}>{verdict.composite}/100</span>
-                    {' '}(risk 35% + vamp 25% + bundle 25% + cabal 15%)
-                  </div>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'1rem' }}>
-                    {verdict.positives.length > 0 && (
-                      <div>
-                        <div style={{ fontSize:9, color:'var(--green)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6, fontWeight:700 }}>✓ Positive Signals</div>
-                        {verdict.positives.map((p,i)=>(
-                          <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:6, marginBottom:4 }}>
-                            <span style={{ color:'var(--green)', fontSize:10, flexShrink:0 }}>+</span>
-                            <span style={{ fontSize:11, color:'var(--muted2)', lineHeight:1.4 }}>{p}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {verdict.negatives.length > 0 && (
-                      <div>
-                        <div style={{ fontSize:9, color:'var(--red)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6, fontWeight:700 }}>✗ Risk Signals</div>
-                        {verdict.negatives.map((n,i)=>(
-                          <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:6, marginBottom:4 }}>
-                            <span style={{ color:'var(--red)', fontSize:10, flexShrink:0 }}>−</span>
-                            <span style={{ fontSize:11, color:'var(--muted2)', lineHeight:1.4 }}>{n}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div style={{ textAlign:'center', minWidth:100 }}>
-                  <div style={{ fontFamily:'Orbitron,monospace', fontSize:42, fontWeight:700, color:verdict.color, lineHeight:1 }}>{verdict.composite}</div>
-                  <div style={{ fontSize:9, color:'var(--muted)', marginTop:4, letterSpacing:'.06em' }}>COMPOSITE SCORE</div>
-                </div>
-              </div>
-              <div style={{ marginTop:12, paddingTop:12, borderTop:`1px solid ${verdict.color}44`, fontSize:10, color:'var(--muted)' }}>
-                ⚠️ Ini adalah analisis on-chain otomatis, bukan financial advice. Always DYOR. Past patterns don't guarantee future results.
-              </div>
-            </div>
-          )}
-
 
 
           {/* Deep Networks / Cabal */}
