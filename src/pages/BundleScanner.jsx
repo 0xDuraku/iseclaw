@@ -438,6 +438,41 @@ export default function BundleScanner() {
             )}
           </div>
 
+          {/* INVESTMENT VERDICT - compact */}
+          {verdict && (
+            <div style={{ background:'var(--bg1)', border:`1px solid ${verdict.color}55`, borderRadius:12, padding:'1rem 1.25rem', marginBottom:'1rem', display:'flex', alignItems:'center', gap:'1rem', flexWrap:'wrap', position:'relative', overflow:'hidden' }}>
+              <div style={{ position:'absolute', left:0, top:0, bottom:0, width:4, background:verdict.color, borderRadius:'4px 0 0 4px' }}/>
+              <div style={{ paddingLeft:8, flex:1 }}>
+                <div style={{ fontSize:9, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.1em', marginBottom:4 }}>INVESTMENT VERDICT</div>
+                <div style={{ fontFamily:'Orbitron,monospace', fontSize:16, fontWeight:700, color:verdict.color }}>
+                  {verdict.emoji} {verdict.verdict}
+                </div>
+                <div style={{ fontSize:10, color:'var(--muted2)', marginTop:4 }}>
+                  Composite: <span style={{ color:verdict.color, fontWeight:700 }}>{verdict.composite}/100</span>
+                  {' · '}risk {vampScore?.score||0} · vamp {vampScore?.score||0} · bundle {bundleScore?.score||0} · cabal {cabalScore?.score||0}
+                </div>
+              </div>
+              <div style={{ display:'flex', gap:'1.5rem', flexWrap:'wrap' }}>
+                <div>
+                  <div style={{ fontSize:9, color:'var(--green)', fontWeight:700, marginBottom:3 }}>+ Positives</div>
+                  {verdict.positives.slice(0,2).map((p,i)=>(
+                    <div key={i} style={{ fontSize:10, color:'var(--muted2)', marginBottom:2 }}>✓ {p}</div>
+                  ))}
+                </div>
+                <div>
+                  <div style={{ fontSize:9, color:'var(--red)', fontWeight:700, marginBottom:3 }}>− Risks</div>
+                  {verdict.negatives.slice(0,2).map((n,i)=>(
+                    <div key={i} style={{ fontSize:10, color:'var(--muted2)', marginBottom:2 }}>✗ {n}</div>
+                  ))}
+                </div>
+              </div>
+              <div style={{ textAlign:'center', minWidth:70 }}>
+                <div style={{ fontFamily:'Orbitron,monospace', fontSize:36, fontWeight:700, color:verdict.color, lineHeight:1 }}>{verdict.composite}</div>
+                <div style={{ fontSize:8, color:'var(--muted)' }}>COMPOSITE</div>
+              </div>
+            </div>
+          )}
+
           <RiskBanner risk={r.risk}/>
 
           {/* VAMP + BUNDLE + CABAL scores */}
@@ -594,10 +629,11 @@ export default function BundleScanner() {
               <CardHeader title="DEV WALLET ANALYSIS" icon={Code}
                 badge={vampScore?.isVamp?{label:'VAMP '+vampScore.score,variant:'red'}:dev?.deployCount>3?{label:'serial deployer',variant:'amber'}:{label:'analyzed',variant:'muted'}}/>
               {dev ? (<>
-                <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8, marginBottom:12 }}>
+                <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, marginBottom:12 }}>
                   <StatBox value={dev.deployCount||0} label="Deploys" color={dev.deployCount>5?'var(--red)':dev.deployCount>2?'var(--amber)':'var(--green)'}/>
-                  <StatBox value={fmtAge(dev.ageDays)} label="Wallet Age" color={dev.ageDays<7?'var(--red)':dev.ageDays<30?'var(--amber)':'var(--muted2)'}/>
-                  <StatBox value={fmtSol(dev.solBalance)} label="SOL Balance" color="var(--muted2)"/>
+                  <StatBox value={dev.migrationCount||0} label="Migrated" color={dev.migrationCount>0?'var(--green)':'var(--muted)'}/>
+                  <StatBox value={fmtAge(dev.ageDays)} label="Wallet Age" color={(dev.ageDays||999)<7?'var(--red)':(dev.ageDays||999)<30?'var(--amber)':'var(--muted2)'}/>
+                  <StatBox value={fmtSol(dev.solBalance)} label="SOL Bal" color="var(--muted2)"/>
                 </div>
                 <div style={{ marginBottom:10 }}>
                   <div style={{ fontSize:9, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:4 }}>Dev Wallet</div>
@@ -787,24 +823,7 @@ export default function BundleScanner() {
             </div>
           )}
 
-          {/* BUBBLEMAPS EMBED */}
-          {r?.mint && (
-            <Card style={{ marginBottom:'1rem' }}>
-              <CardHeader title="BUBBLEMAPS — HOLDER VISUALIZATION" icon={Users}
-                badge={{ label:'live', variant:'blue' }}/>
-              <div style={{ borderRadius:8, overflow:'hidden', border:'1px solid var(--b1)', background:'var(--bg2)' }}>
-                <iframe
-                  src={`https://app.bubblemaps.io/sol/token/${r.mint}`}
-                  style={{ width:'100%', height:500, border:'none', display:'block' }}
-                  title="Bubblemaps holder visualization"
-                  loading="lazy"
-                />
-              </div>
-              <div style={{ fontSize:10, color:'var(--muted)', marginTop:8 }}>
-                Visualisasi on-chain holder relationships dari Bubblemaps. Cluster besar = bundle / cabal.
-              </div>
-            </Card>
-          )}
+
 
           {/* Deep Networks / Cabal */}
           {(r.deepNetworks||[]).length>0 && (
