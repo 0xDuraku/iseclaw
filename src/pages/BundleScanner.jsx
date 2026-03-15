@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Search, AlertTriangle, CheckCircle, ExternalLink, Users, PieChart, Clock, Shield, Zap, Code, Twitter, Globe, TrendingUp } from 'lucide-react'
 import { Card, CardHeader, Badge, StatBox, LiveBadge } from '../components/Card.jsx'
 import HolderBubble from '../components/HolderBubble.jsx'
@@ -232,8 +232,22 @@ function getVerdict(risk, vampScore, bundleScore, cabalScore, dev, holders, dex)
 }
 
 export default function BundleScanner() {
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState(() => {
+    const saved = sessionStorage.getItem('bundleScanMint')
+    if (saved) { sessionStorage.removeItem('bundleScanMint'); return saved }
+    return ''
+  })
   const [loading, setLoading] = useState(false)
+
+  // Auto-scan if mint was pre-filled from Alpha Signals
+  useEffect(() => {
+    const saved = sessionStorage.getItem('bundleScanMint')
+    if (saved) {
+      sessionStorage.removeItem('bundleScanMint')
+      setInput(saved)
+      setTimeout(() => scan(saved), 100)
+    }
+  }, [])
   const [loadMsg, setLoadMsg] = useState('')
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
@@ -439,37 +453,53 @@ export default function BundleScanner() {
             )}
           </div>
 
-          {/* INVESTMENT VERDICT - compact */}
+          {/* INVESTMENT VERDICT - full */}
           {verdict && (
-            <div style={{ background:'var(--bg1)', border:`1px solid ${verdict.color}55`, borderRadius:12, padding:'1rem 1.25rem', marginBottom:'1rem', display:'flex', alignItems:'center', gap:'1rem', flexWrap:'wrap', position:'relative', overflow:'hidden' }}>
-              <div style={{ position:'absolute', left:0, top:0, bottom:0, width:4, background:verdict.color, borderRadius:'4px 0 0 4px' }}/>
-              <div style={{ paddingLeft:8, flex:1 }}>
-                <div style={{ fontSize:9, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.1em', marginBottom:4 }}>INVESTMENT VERDICT</div>
-                <div style={{ fontFamily:'Orbitron,monospace', fontSize:16, fontWeight:700, color:verdict.color }}>
-                  {verdict.emoji} {verdict.verdict}
+            <div style={{ background:'var(--bg1)', border:`1px solid ${verdict.color}66`, borderRadius:14, padding:'1.5rem', marginBottom:'1rem', position:'relative', overflow:'hidden' }}>
+              <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${verdict.color},transparent)` }}/>
+              <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'1.5rem', flexWrap:'wrap' }}>
+                {/* Left: verdict + breakdown */}
+                <div style={{ flex:1, minWidth:280 }}>
+                  <div style={{ fontSize:9, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.1em', marginBottom:6 }}>INVESTMENT VERDICT</div>
+                  <div style={{ fontFamily:'Orbitron,monospace', fontSize:20, fontWeight:700, color:verdict.color, marginBottom:6 }}>
+                    {verdict.emoji} {verdict.verdict}
+                  </div>
+                  <div style={{ fontSize:10, color:'var(--muted2)', marginBottom:12 }}>
+                    Composite: <span style={{ color:verdict.color, fontWeight:700 }}>{verdict.composite}/100</span>
+                    {' · '}Risk {r.risk?.score||0} · Vamp {vampScore?.score||0} · Bundle {bundleScore?.score||0} · Cabal {cabalScore?.score||0}
+                  </div>
+                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+                    {verdict.positives.length > 0 && (
+                      <div>
+                        <div style={{ fontSize:9, color:'var(--green)', fontWeight:700, letterSpacing:'.06em', marginBottom:6 }}>✓ POSITIVES</div>
+                        {verdict.positives.map((p,i)=>(
+                          <div key={i} style={{ display:'flex', gap:5, marginBottom:4, fontSize:10, color:'var(--muted2)', lineHeight:1.4 }}>
+                            <span style={{ color:'var(--green)', flexShrink:0 }}>+</span>{p}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {verdict.negatives.length > 0 && (
+                      <div>
+                        <div style={{ fontSize:9, color:'var(--red)', fontWeight:700, letterSpacing:'.06em', marginBottom:6 }}>✗ RISKS</div>
+                        {verdict.negatives.map((n,i)=>(
+                          <div key={i} style={{ display:'flex', gap:5, marginBottom:4, fontSize:10, color:'var(--muted2)', lineHeight:1.4 }}>
+                            <span style={{ color:'var(--red)', flexShrink:0 }}>−</span>{n}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div style={{ fontSize:10, color:'var(--muted2)', marginTop:4 }}>
-                  Composite: <span style={{ color:verdict.color, fontWeight:700 }}>{verdict.composite}/100</span>
-                  {' · '}risk {vampScore?.score||0} · vamp {vampScore?.score||0} · bundle {bundleScore?.score||0} · cabal {cabalScore?.score||0}
+                {/* Right: big score */}
+                <div style={{ textAlign:'center', padding:'1rem 1.5rem', background:`${verdict.color}11`, border:`1px solid ${verdict.color}33`, borderRadius:12 }}>
+                  <div style={{ fontFamily:'Orbitron,monospace', fontSize:52, fontWeight:700, color:verdict.color, lineHeight:1 }}>{verdict.composite}</div>
+                  <div style={{ fontSize:9, color:'var(--muted)', marginTop:4, letterSpacing:'.08em' }}>COMPOSITE</div>
+                  <div style={{ fontSize:10, color:verdict.color, marginTop:8, fontWeight:600 }}>{verdict.verdict}</div>
                 </div>
               </div>
-              <div style={{ display:'flex', gap:'1.5rem', flexWrap:'wrap' }}>
-                <div>
-                  <div style={{ fontSize:9, color:'var(--green)', fontWeight:700, marginBottom:3 }}>+ Positives</div>
-                  {verdict.positives.slice(0,2).map((p,i)=>(
-                    <div key={i} style={{ fontSize:10, color:'var(--muted2)', marginBottom:2 }}>✓ {p}</div>
-                  ))}
-                </div>
-                <div>
-                  <div style={{ fontSize:9, color:'var(--red)', fontWeight:700, marginBottom:3 }}>− Risks</div>
-                  {verdict.negatives.slice(0,2).map((n,i)=>(
-                    <div key={i} style={{ fontSize:10, color:'var(--muted2)', marginBottom:2 }}>✗ {n}</div>
-                  ))}
-                </div>
-              </div>
-              <div style={{ textAlign:'center', minWidth:70 }}>
-                <div style={{ fontFamily:'Orbitron,monospace', fontSize:36, fontWeight:700, color:verdict.color, lineHeight:1 }}>{verdict.composite}</div>
-                <div style={{ fontSize:8, color:'var(--muted)' }}>COMPOSITE</div>
+              <div style={{ marginTop:12, paddingTop:10, borderTop:`1px solid ${verdict.color}33`, fontSize:10, color:'var(--muted)' }}>
+                ⚠️ Analisis on-chain otomatis — bukan financial advice. DYOR always.
               </div>
             </div>
           )}

@@ -11,7 +11,7 @@ export default function App() {
   const pages = {
     dashboard: <Dashboard onNavigate={setView} />,
     scanner: <BundleScanner />,
-    signals: <AlphaSignals />,
+    signals: <AlphaSignals onNavigate={setView} />,
     watchlist: <Watchlist />,
   }
 

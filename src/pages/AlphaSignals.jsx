@@ -10,7 +10,7 @@ const SIGNAL_TYPES = {
   LIQ_INFLOW:   { color: 'var(--green)',  bg: 'rgba(16,185,129,.1)',   label: 'LIQ INFLOW',   desc: 'Fresh LP masuk signifikan' },
 }
 
-function SignalCard({ signal }) {
+function SignalCard({ signal, onBundleScan }) {
   const st = SIGNAL_TYPES[signal.type] || SIGNAL_TYPES.VOL_ANOMALY
   const [imgErr, setImgErr] = useState(false)
   const age = signal.detectedAt ? Math.floor((Date.now() - signal.detectedAt) / 60000) : 0
@@ -62,16 +62,16 @@ function SignalCard({ signal }) {
           style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', gap:4, fontSize:10, padding:'6px', borderRadius:6, background:'rgba(14,165,233,.1)', border:'1px solid rgba(14,165,233,.25)', color:'var(--blue)', textDecoration:'none' }}>
           <TrendingUp size={10}/> DexScreener
         </a>
-        <a href={`https://iseclaw.zerovantclaw.xyz/?scanner=${signal.address}`} target="_blank" rel="noreferrer"
-          style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', gap:4, fontSize:10, padding:'6px', borderRadius:6, background:'rgba(244,63,94,.08)', border:'1px solid rgba(244,63,94,.25)', color:'var(--red)', textDecoration:'none' }}>
+        <button onClick={()=>onBundleScan&&onBundleScan(signal.address)}
+          style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', gap:4, fontSize:10, padding:'6px', borderRadius:6, background:'rgba(244,63,94,.08)', border:'1px solid rgba(244,63,94,.25)', color:'var(--red)', cursor:'pointer' }}>
           Bundle Scan
-        </a>
+        </button>
       </div>
     </div>
   )
 }
 
-export default function AlphaSignals() {
+export default function AlphaSignals({ onNavigate }) {
   const market = useMarketData()
   const [signals, setSignals] = useState([])
   const [loading, setLoading] = useState(false)
@@ -80,6 +80,12 @@ export default function AlphaSignals() {
   const [autoScan, setAutoScan] = useState(false)
   const intervalRef = useRef(null)
   const fng = market?.fear_and_greed?.value || 50
+
+  function handleBundleScan(mint) {
+    // Store mint in sessionStorage then navigate to scanner
+    sessionStorage.setItem('bundleScanMint', mint)
+    onNavigate && onNavigate('scanner')
+  }
 
   async function runScan() {
     setLoading(true)
@@ -191,7 +197,7 @@ export default function AlphaSignals() {
       {/* Signals grid */}
       {signals.length > 0 ? (
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(300px,1fr))', gap:'1rem' }}>
-          {signals.map((s,i)=><SignalCard key={s.address+i} signal={s}/>)}
+          {signals.map((s,i)=><SignalCard key={s.address+i} signal={s} onBundleScan={handleBundleScan}/>)}
         </div>
       ) : (
         <div style={{ textAlign:'center', padding:'4rem 2rem' }}>
