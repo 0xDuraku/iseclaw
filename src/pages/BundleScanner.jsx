@@ -194,6 +194,42 @@ function calcCabalScore(deepNetworks, fundingDist) {
   return { score, label, totalPct: +totalCabalPct.toFixed(1), networks: networks.length }
 }
 
+function getVerdict(risk, vampScore, bundleScore, cabalScore, dev, holders, dex) {
+  const riskScore = risk?.score || 0
+  const vamp = vampScore?.score || 0
+  const bundle = bundleScore?.score || 0
+  const cabal = cabalScore?.score || 0
+  const composite = (riskScore * 0.35) + (vamp * 0.25) + (bundle * 0.25) + (cabal * 0.15)
+  
+  const positives = []
+  const negatives = []
+  
+  // Positive signals
+  if (dex?.paid) positives.push('DEX ads aktif — ada marketing budget')
+  if ((holders?.top1Pct||0) < 10 && !holders?.details?.[0]?.isLP) positives.push('Distribusi supply cukup merata')
+  if (dev?.deployCount <= 1) positives.push('Dev wallet baru / pertama kali deploy')
+  if ((dev?.ageDays||0) > 180) positives.push('Dev wallet sudah lama — bukan burner')
+  if (riskScore < 30) positives.push('Risk score rendah')
+  if (bundle < 30) positives.push('Tidak ada indikasi heavy bundle')
+  if (cabal < 20) positives.push('Tidak ada cluster cabal terdeteksi')
+  
+  // Negative signals
+  if (riskScore >= 70) negatives.push('Risk score tinggi — banyak red flags')
+  if (vamp >= 60) negatives.push('Dev profile mirip vamp — serial deployer')
+  if (bundle >= 60) negatives.push('Indikasi heavy bundle di launch')
+  if (cabal >= 50) negatives.push('Cluster cabal terdeteksi')
+  if ((dev?.ageDays||999) < 7) negatives.push('Dev wallet sangat baru — kemungkinan burner')
+  if (dev?.deployCount > 5) negatives.push(`Dev sudah deploy ${dev.deployCount} token sebelumnya`)
+
+  let verdict, color, emoji
+  if (composite < 25) { verdict = 'RELATIVELY SAFE'; color = 'var(--green)'; emoji = '✅' }
+  else if (composite < 45) { verdict = 'PROCEED WITH CAUTION'; color = 'var(--amber)'; emoji = '⚠️' }
+  else if (composite < 65) { verdict = 'HIGH RISK'; color = 'var(--orange)'; emoji = '��' }
+  else { verdict = 'AVOID'; color = 'var(--red)'; emoji = '❌' }
+  
+  return { verdict, color, emoji, composite: Math.round(composite), positives, negatives }
+}
+
 export default function BundleScanner() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -257,6 +293,8 @@ export default function BundleScanner() {
 
   // Top holder LP check
   const topHolderIsLP = r?.holders?.details?.[0]?.isLP || false
+  // Investment verdict
+  const verdict = r ? getVerdict(r.risk, vampScore, bundleScore, cabalScore, dev, r.holders, dex) : null
 
   return (
     <div>
@@ -380,10 +418,16 @@ export default function BundleScanner() {
                 style={{ display:'inline-flex', alignItems:'center', gap:5, fontSize:10, padding:'5px 10px', borderRadius:8, background:'rgba(129,140,248,.1)', border:'1px solid rgba(129,140,248,.3)', color:'var(--purple)', textDecoration:'none' }}>
                 Bubblemaps
               </a>
-              <span style={{ fontSize:10, padding:'5px 10px', borderRadius:8, background:dex?.paid?'rgba(16,185,129,.1)':'rgba(74,112,144,.1)', border:`1px solid ${dex?.paid?'rgba(16,185,129,.3)':'var(--b1)'}`, color:dex?.paid?'var(--green)':'var(--muted)' }}>
-                {dex?.paid ? 'DEX Paid' : 'DEX Free'}
-                {dex?.isCto && <span style={{ marginLeft:6, color:'var(--amber)' }}>· CTO</span>}
-              </span>
+              {dex?.isCto && (
+                <span style={{ fontSize:10, padding:'5px 10px', borderRadius:8, background:'rgba(245,158,11,.1)', border:'1px solid rgba(245,158,11,.3)', color:'var(--amber)' }}>
+                  CTO Token
+                </span>
+              )}
+              {!dex?.paid && (
+                <span style={{ fontSize:10, padding:'5px 10px', borderRadius:8, background:'rgba(74,112,144,.1)', border:'1px solid var(--b1)', color:'var(--muted)' }}>
+                  DEX Free Tier
+                </span>
+              )}
             </div>
 
             {/* KOL alert */}
@@ -692,6 +736,75 @@ export default function BundleScanner() {
               </div>
             </Card>
           </div>
+
+          {/* INVESTMENT VERDICT */}
+          {verdict && (
+            <div style={{ background:'var(--bg1)', border:`2px solid ${verdict.color}`, borderRadius:14, padding:'1.5rem', marginBottom:'1rem', position:'relative', overflow:'hidden' }}>
+              <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${verdict.color},transparent)` }}/>
+              <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'1rem', flexWrap:'wrap' }}>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:9, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.1em', marginBottom:8 }}>INVESTMENT VERDICT</div>
+                  <div style={{ fontFamily:'Orbitron,monospace', fontSize:18, fontWeight:700, color:verdict.color, marginBottom:6 }}>
+                    {verdict.emoji} {verdict.verdict}
+                  </div>
+                  <div style={{ fontSize:11, color:'var(--muted2)', marginBottom:12 }}>
+                    Composite risk score: <span style={{ color:verdict.color, fontWeight:700 }}>{verdict.composite}/100</span>
+                    {' '}(risk 35% + vamp 25% + bundle 25% + cabal 15%)
+                  </div>
+                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'1rem' }}>
+                    {verdict.positives.length > 0 && (
+                      <div>
+                        <div style={{ fontSize:9, color:'var(--green)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6, fontWeight:700 }}>✓ Positive Signals</div>
+                        {verdict.positives.map((p,i)=>(
+                          <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:6, marginBottom:4 }}>
+                            <span style={{ color:'var(--green)', fontSize:10, flexShrink:0 }}>+</span>
+                            <span style={{ fontSize:11, color:'var(--muted2)', lineHeight:1.4 }}>{p}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {verdict.negatives.length > 0 && (
+                      <div>
+                        <div style={{ fontSize:9, color:'var(--red)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6, fontWeight:700 }}>✗ Risk Signals</div>
+                        {verdict.negatives.map((n,i)=>(
+                          <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:6, marginBottom:4 }}>
+                            <span style={{ color:'var(--red)', fontSize:10, flexShrink:0 }}>−</span>
+                            <span style={{ fontSize:11, color:'var(--muted2)', lineHeight:1.4 }}>{n}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div style={{ textAlign:'center', minWidth:100 }}>
+                  <div style={{ fontFamily:'Orbitron,monospace', fontSize:42, fontWeight:700, color:verdict.color, lineHeight:1 }}>{verdict.composite}</div>
+                  <div style={{ fontSize:9, color:'var(--muted)', marginTop:4, letterSpacing:'.06em' }}>COMPOSITE SCORE</div>
+                </div>
+              </div>
+              <div style={{ marginTop:12, paddingTop:12, borderTop:`1px solid ${verdict.color}44`, fontSize:10, color:'var(--muted)' }}>
+                ⚠️ Ini adalah analisis on-chain otomatis, bukan financial advice. Always DYOR. Past patterns don't guarantee future results.
+              </div>
+            </div>
+          )}
+
+          {/* BUBBLEMAPS EMBED */}
+          {r?.mint && (
+            <Card style={{ marginBottom:'1rem' }}>
+              <CardHeader title="BUBBLEMAPS — HOLDER VISUALIZATION" icon={Users}
+                badge={{ label:'live', variant:'blue' }}/>
+              <div style={{ borderRadius:8, overflow:'hidden', border:'1px solid var(--b1)', background:'var(--bg2)' }}>
+                <iframe
+                  src={`https://app.bubblemaps.io/sol/token/${r.mint}`}
+                  style={{ width:'100%', height:500, border:'none', display:'block' }}
+                  title="Bubblemaps holder visualization"
+                  loading="lazy"
+                />
+              </div>
+              <div style={{ fontSize:10, color:'var(--muted)', marginTop:8 }}>
+                Visualisasi on-chain holder relationships dari Bubblemaps. Cluster besar = bundle / cabal.
+              </div>
+            </Card>
+          )}
 
           {/* Deep Networks / Cabal */}
           {(r.deepNetworks||[]).length>0 && (
