@@ -782,6 +782,9 @@ export default function BundleScanner() {
                 { name:'Coord. Buy Groups', val:coord,                 risk:coord>=3 },
                 { name:'DEX Paid',          val:dex?.paid?'Yes':'No',  risk:false },
                 { name:'CTO',              val:dex?.isCto?'Yes':'No',  risk:false },
+                { name:'Honeypot',         val:r.honeypot?.status||'?', risk:r.honeypot?.isHoneypot },
+                { name:'Can Buy',          val:r.honeypot?.canBuy===null?'?':r.honeypot?.canBuy?'Yes':'NO', risk:r.honeypot?.canBuy===false },
+                { name:'Can Sell',         val:r.honeypot?.canSell===null?'?':r.honeypot?.canSell?'Yes':'NO ⚠️', risk:r.honeypot?.canSell===false },
               ].map(p=>(
                 <div key={p.name} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'7px 0', borderBottom:'1px solid var(--b1)' }}>
                   <span style={{ fontSize:11, color:'var(--muted2)' }}>{p.name}</span>
